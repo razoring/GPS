@@ -10,13 +10,41 @@ public class Mapper extends JPanel {
 	LinkedList<Node> nodes = new LinkedList<>();
 	LinkedList<Node> intersections = new LinkedList<>();
 	LinkedList<Node> curves = new LinkedList<>();
-	Node selectedNode1 = null;
-	Node selectedNode2 = null;
+	static Node selectedNode1 = null;
+	static Node selectedNode2 = null;
 
 	File map = new File("src/map.txt");
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static Mapper panel = new Mapper("src/8.PNG");
+
+	public Mapper(String imagePath) {
+		mapImage = new ImageIcon(imagePath).getImage();
+		
+		readFromFile();
+		
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int x = e.getX();
+				int y = e.getY();
+
+				drawMap(x, y, findNearestNode(x, y, 10));
+				frame.repaint();
+			}
+		});
+		
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int x = e.getX();
+				int y = e.getY();
+
+				drawMap(x, y, findNearestNode(x, y, 10));
+				frame.repaint();
+			}
+		});
+	}
 
 	private class Node {
 		int x;
@@ -35,16 +63,33 @@ public class Mapper extends JPanel {
 
 		@Override
 		public String toString() {
-			return type + "|" + x + "," + y + "|" + (next != null ? next.type + "," + next.x + "," + next.y : "null") + "|"
-					+ (prev != null ? prev.type + "," + prev.x + "," + prev.y : "null");
+			String next = "";
+			String prev = "";
+			
+			if (this.next!=null) {
+				next = this.next.type+"("+this.next.x+","+this.next.y;
+			} else {
+				next = "(null";
+			}
+			
+			if (this.prev!=null) {
+				prev = this.prev.type+"("+this.prev.x+","+this.prev.y;
+			} else {
+				prev = "(null";
+			}
+			
+			return "[this."+this.type+"("+this.x+","+this.y+"),next."+next+"),previous."+prev+")]";
+			// [this.INTERSECTION(500,500),next.CURVE(200,200),previous.INTERSECTION(100,100)]
 		}
 	}
 
 	private void drawMap(int x, int y, Node node) {
 		if (mode.equals("ADD")) {
-			Node newNode = new Node(x, y, "INTERSECTION");
-			intersections.add(newNode);
-			nodes.add(newNode);
+			if (findNearestNode(x,y,10)==null) {
+				Node newNode = new Node(x, y, "INTERSECTION");
+				intersections.add(newNode);
+				nodes.add(newNode);
+			}
 		} else if (mode.equals("DELETE")) {
 			if (node != null) {
 				nodes.remove(node);
@@ -58,9 +103,12 @@ public class Mapper extends JPanel {
 		} else if (mode.equals("LINK")) {
 			if (selectedNode1 == null) {
 				selectedNode1 = findNearestNode(x, y, 10);
+                System.err.println("Selected node: (" + node.x + ", " + node.y + ")");
 			} else {
 				selectedNode2 = findNearestNode(x, y, 10);
 				if (selectedNode1 != null && selectedNode2 != null && selectedNode1 != selectedNode2) {
+	                System.err.println("Selected node: (" + node.x + ", " + node.y + ")");
+                    System.out.println("Current mode is (LINK), linking from ("+selectedNode2.x+","+selectedNode2.y+")");
 					selectedNode1.next = selectedNode2;
 					selectedNode2.prev = selectedNode1;
 					selectedNode1 = selectedNode2;
@@ -87,80 +135,127 @@ public class Mapper extends JPanel {
         	nodes.add(newNode);
         	curves.add(newNode);
         }
-
-		saveMapToFile();
+		
+		saveToFile();
 	}
 
-	private void saveMapToFile() {
-		try (FileWriter writer = new FileWriter(map)) {
-			for (Node node : nodes) {
-				writer.write(node.toString() + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void loadMapFromFile() {
+	File save = new File("src//map.txt");
+	private void saveToFile() {
 		try {
-			if (map.createNewFile()) {
-				System.out.println("Created new map file: " + map.getAbsolutePath());
+			if (save.createNewFile()) {
+				System.out.println("File created: " + save.getName());
 			} else {
-				System.out.println("Map file found at:" + map.getAbsolutePath());
+				FileWriter writer = new FileWriter(save);
+				String result = "";
+				for (Node node : nodes) {
+					result = result+node.toString()+"\n";
+				}
+				//System.out.println(result);
+				writer.write(result);
+				writer.close();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try (BufferedReader reader = new BufferedReader(new FileReader(map))) {
-			String line;
-			Map<String, Node> nodeMap = new HashMap<>();
-			while ((line = reader.readLine()) != null) {
-				String[] parts = line.split("\\|");
-				String type = parts[0];
-				String[] coords = parts[1].split(",");
-				Node newNode = new Node(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), type);
-				nodes.add(newNode);
-				nodeMap.put(type + "," + parts[1], newNode);
-
-				if (parts.length > 2 && !parts[2].equals("null")) {
-					String[] nextParts = parts[2].split(",");
-					String nextKey = nextParts[0] + "," + nextParts[1] + "," + nextParts[2];
-					newNode.next = nodeMap.get(nextKey);
-				}
-
-				if (parts.length > 3 && !parts[3].equals("null")) {
-					String[] prevParts = parts[3].split(",");
-					String prevKey = prevParts[0] + "," + prevParts[1] + "," + prevParts[2];
-					newNode.prev = nodeMap.get(prevKey);
-				}
-
-				if (type.equals("INTERSECTION")) {
-					intersections.add(newNode);
-				} else if (type.equals("CURVE")) {
-					curves.add(newNode);
-				}
-			}
-		} catch (IOException e) {
+			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
 	}
-
-	public Mapper(String imagePath) {
-		mapImage = new ImageIcon(imagePath).getImage();
-
-		loadMapFromFile();
-
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int x = e.getX();
-				int y = e.getY();
-
-				drawMap(x, y, findNearestNode(x, y, 10));
-				frame.repaint();
+	
+	private void readFromFile() {
+		try {
+			try {
+				if (save.createNewFile()) {
+					System.out.println("File created: " + save.getName());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		});
+			
+			// generate all the nodes first
+			Scanner reader = new Scanner(save);
+			while (reader.hasNextLine()) {
+				String data = reader.nextLine();
+				String unpacked = data.substring(1,data.length()-1);
+				String items[] = unpacked.split("\n");
+				for (String item : items) {
+					String curr = item.split("\\),")[0];
+					String next = item.split("\\),")[1];
+					String prev = item.split("\\),")[2];
+
+					String xx = curr.split(",")[0].replaceAll("\\D", "");
+					if (!xx.isEmpty()) {
+						int x = Integer.parseInt(xx);
+						String yy = curr.split(",")[1].replaceAll("\\)", "");
+						if (!yy.isEmpty()) {
+							int y = Integer.parseInt(yy);
+							String type = curr.split("\\.")[1].split("\\(")[0];
+
+							//System.out.println("o-"+x+","+y);
+							Node newNode = new Node(x, y, type);
+									
+							nodes.add(newNode);
+							if (type.charAt(0) == 'I') {
+								intersections.add(newNode);
+							} else {
+								curves.add(newNode);
+							}
+						}
+					}
+				}
+			}
+			
+			// attach all the previous and next nodes, will not connect if a node is not found
+			Scanner reader2 = new Scanner(save);
+			while (reader2.hasNextLine()) {
+				String data = reader2.nextLine();
+				String unpacked = data.substring(1,data.length()-1);
+				String items[] = unpacked.split("\n");
+				
+				for (String item : items) {
+					String curr = item.split("\\),")[0];
+					String next = item.split("\\),")[1];
+					String prev = item.split("\\),")[2];
+					
+					String xx = curr.split(",")[0].replaceAll("\\D", "");
+					if (!xx.isEmpty()) {
+						int x = Integer.parseInt(xx);
+						String yy = curr.split(",")[1].replaceAll("\\)", "");
+						if (!yy.isEmpty()) {
+							int y = Integer.parseInt(yy);
+							
+							Node newNode = findNearestNode(x,y,10);
+							
+							//System.out.println("o-"+x+","+y);
+							xx = next.split(",")[0].replaceAll("\\D", "");
+							if (!xx.isEmpty()) {
+								int x_ = Integer.parseInt(xx);
+								yy = next.split(",")[1].replaceAll("\\)", "");
+								if (!yy.isEmpty()) {
+									int y_ = Integer.parseInt(yy);
+									newNode.next = findNearestNode(x_,y_,10);
+									//System.out.println("n-"+x_+","+y_);
+								}
+							}
+							
+							xx = prev.split(",")[0].replaceAll("\\D", "");
+							if (!xx.isEmpty()) {
+								int x_ = Integer.parseInt(xx);
+								yy = prev.split(",")[1].replaceAll("\\)", "");
+								if (!yy.isEmpty()) {
+									int y_ = Integer.parseInt(yy);
+									newNode.prev = findNearestNode(x_,y_,10);
+									//System.out.println("p-"+x_+","+y_);
+								}
+							}
+						}
+					}
+				}
+			}
+			reader.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private Node findNearestNode(int x, int y, int tolerance) {
@@ -169,6 +264,7 @@ public class Mapper extends JPanel {
 				return node;
 			}
 		}
+		
 		return null;
 	}
 
@@ -207,6 +303,8 @@ public class Mapper extends JPanel {
 		while (true) {
 			System.out.println("Set Mode (" + mode + "): ");
 			mode = input.nextLine().toUpperCase();
+			selectedNode1 = null;
+			selectedNode2 = null;
 		}
 	}
 }
