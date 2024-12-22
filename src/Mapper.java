@@ -33,17 +33,6 @@ public class Mapper extends JPanel {
 				frame.repaint();
 			}
 		});
-		
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int x = e.getX();
-				int y = e.getY();
-
-				drawMap(x, y, findNearestNode(x, y, 10));
-				frame.repaint();
-			}
-		});
 	}
 
 	private class Node {
