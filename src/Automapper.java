@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
-public class Mapper extends JPanel {
+public class Automapper extends JPanel {
 	Image mapImage;
 	static String mode = "ADD";
 	LinkedList<Node> nodes = new LinkedList<>();
@@ -16,9 +16,9 @@ public class Mapper extends JPanel {
 	File map = new File("src/map.txt");
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
-	static Mapper panel = new Mapper("src/8.PNG");
+	static Automapper panel = new Automapper("src/8.PNG");
 
-	public Mapper(String imagePath) {
+	public Automapper(String imagePath) {
 		mapImage = new ImageIcon(imagePath).getImage();
 		
 		readFromFile();
@@ -33,43 +33,6 @@ public class Mapper extends JPanel {
 				frame.repaint();
 			}
 		});
-	}
-
-	private class Node {
-		int x;
-		int y;
-		String type;
-		Node next;
-		Node prev;
-
-		private Node(int xx, int yy, String nodeType) {
-			x = xx;
-			y = yy;
-			type = nodeType;
-			next = null;
-			prev = null;
-		}
-
-		@Override
-		public String toString() {
-			String next = "";
-			String prev = "";
-			
-			if (this.next!=null) {
-				next = this.next.type+"("+this.next.x+","+this.next.y;
-			} else {
-				next = "(null";
-			}
-			
-			if (this.prev!=null) {
-				prev = this.prev.type+"("+this.prev.x+","+this.prev.y;
-			} else {
-				prev = "(null";
-			}
-			
-			return "[this."+this.type+"("+this.x+","+this.y+"),next."+next+"),previous."+prev+")]";
-			// [this.INTERSECTION(500,500),next.CURVE(200,200),previous.INTERSECTION(100,100)]
-		}
 	}
 
 	private void drawMap(int x, int y, Node node) {
@@ -123,6 +86,10 @@ public class Mapper extends JPanel {
             Node newNode = new Node(x, y, "CURVE");
         	nodes.add(newNode);
         	curves.add(newNode);
+        } else if (mode.equals("INFO")) {
+        	System.out.println(findNearestNode(x,y,10));
+        } else if (mode.equals("NEXT")) {
+        	System.out.println(findNext(findNearestNode(x,y,10)));
         }
 		
 		saveToFile();
@@ -253,8 +220,15 @@ public class Mapper extends JPanel {
 				return node;
 			}
 		}
-		
 		return null;
+	}
+	
+	private Node findNext(Node node) {
+		if (node.next.type().equals("CURVE")) {
+			return findNext(node.next);
+		} else {
+			return node.next;
+		}
 	}
 
 	@Override
