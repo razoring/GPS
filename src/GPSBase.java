@@ -13,13 +13,11 @@ abstract class GPSBase extends JPanel {
 	static Node selectedNode1 = null;
 	static Node selectedNode2 = null;
 
-	File map = new File("src/map.txt");
-
 	public GPSBase(String imagePath) {
+		mapImage = new ImageIcon(imagePath).getImage();
+		readFromFile();
 	}
-
-	abstract void drawMap(int x, int y, Node node);
-
+ 
 	File save = new File("src//map.txt");
 	public void readFromFile() {
 		try {
@@ -113,6 +111,7 @@ abstract class GPSBase extends JPanel {
 				}
 			}
 			reader.close();
+			reader2.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -129,18 +128,29 @@ abstract class GPSBase extends JPanel {
 	}
 	
 	public Node findNext(Node node) {
-		if (node.next.type().equals("CURVE")) {
+		if (node.next.type.equals("CURVE")) {
 			return findNext(node.next);
 		} else {
 			return node.next;
 		}
 	}
 	
-	@Override
-    public void paintComponent(Graphics g) {
-		System.out.println("called2");
-        super.paintComponent(g);
-    }
+	public Node findPrev(Node node) {
+		if (node.prev.type.equals("CURVE")) {
+			return findPrev(node.prev);
+		} else {
+			return node.prev;
+		}
+	}
 	
 	abstract void draw(Graphics g);
+	
+	// print functions to act like python
+	public void print(Object str) {
+		System.out.println(str);
+	}
+	
+	public void print(Object str, Object str2) {
+		System.out.println(str+", "+str2);
+	}
 }

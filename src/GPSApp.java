@@ -5,54 +5,60 @@ import java.util.*;
 import javax.swing.*;
 
 public class GPSApp extends GPSBase {
-	Image mapImage;
-	static String mode = "ADD";
-	LinkedList<Node> nodes = new LinkedList<>();
-	LinkedList<Node> intersections = new LinkedList<>();
-	LinkedList<Node> curves = new LinkedList<>();
-	static Node selectedNode1 = null;
-	static Node selectedNode2 = null;
-
-	File map = new File("src/map.txt");
-
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
+	static long elapsed = System.currentTimeMillis();
 
 	public GPSApp(String imagePath) {
         super(imagePath);
-        mapImage = new ImageIcon(imagePath).getImage();
-
-        readFromFile();
+        generateTraffic();
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
-
-                drawMap(x, y, findNearestNode(x, y, 10));
-                repaint();
             }
         });
     }
 
-	void drawMap(int x, int y, Node node) {
-		
-	}
-
 	@Override
 	void draw(Graphics g) {
+		Color lvl[] = {Color.green, new Color(226,186,52),Color.red};
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
-
-		for (Node node : intersections) {
-			if (nodes.contains(node)) {
-				g.fillOval(node.x - 5, node.y - 5, 10, 10);
-			}
-		}
 
 		for (Node node : nodes) {
 			if (node.next != null) {
+				if (node.type.equals("CURVE")) {
+					if (node.prev != null) {
+						g.setColor(lvl[findPrev(node).congestion]);
+					}
+				} else {
+					g.setColor(lvl[node.congestion]);
+				}
 				g.drawLine(node.x, node.y, node.next.x, node.next.y);
+			}
+		}
+		
+		for (Node node : intersections) {
+			if (nodes.contains(node)) {
+				Graphics2D g2d = (Graphics2D) g;
+				g.setColor(lvl[node.congestion]);
+				if (node.next!=null) {
+					g.setColor(lvl[node.congestion]);
+					g2d.drawString(((int)(node.distance(findNext(node))/3.78)*2+10)+"km/h", node.x, node.y+15);
+				} else {
+					g.setColor(lvl[findPrev(node.prev).congestion]);
+				}
+				g.fillOval(node.x - 5, node.y - 5, 10, 10);
+			}
+		}
+	}
+	
+	public void generateTraffic() {
+		for (Node node : intersections) {
+			if (nodes.contains(node)) {
+				node.setTraffic();
 			}
 		}
 	}
@@ -67,7 +73,13 @@ public class GPSApp extends GPSBase {
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		if (elapsed%1200==0) {
+			generateTraffic();
+			elapsed = System.currentTimeMillis();
+		}
+		
 		super.paintComponent(g);
 		this.draw(g);
+		repaint(); // recursive forever loop to update traffic
 	}
 }

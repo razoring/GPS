@@ -4,26 +4,16 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
-public class Automapper extends GPSBase {
-	Image mapImage;
+public class ManualMapper extends GPSBase {
 	static String mode = "ADD";
-	LinkedList<Node> nodes = new LinkedList<>();
-	LinkedList<Node> intersections = new LinkedList<>();
-	LinkedList<Node> curves = new LinkedList<>();
 	static Node selectedNode1 = null;
 	static Node selectedNode2 = null;
 
-	File map = new File("src/map.txt");
-
 	static JFrame frame = new JFrame("Map with Mouse Listener");
-	static Automapper panel = new Automapper("src/8.PNG");
+	static ManualMapper panel = new ManualMapper("src/8.PNG");
 
-	public Automapper(String imagePath) {
+	public ManualMapper(String imagePath) {
 		super(imagePath);
-		mapImage = new ImageIcon(imagePath).getImage();
-		
-		readFromFile();
-		
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -124,13 +114,13 @@ public class Automapper extends GPSBase {
 
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
-				g.drawOval(node.x - 5, node.y - 5, 10, 10);
+				g.fillOval(node.x - 5, node.y - 5, 10, 10);
 			}
 		}
 
 		for (Node node : curves) {
 			if (nodes.contains(node)) {
-				g.fillOval(node.x - 5, node.y - 5, 10, 10);
+				g.drawOval(node.x - 3, node.y - 3, 6, 6);
 			}
 		}
 
@@ -159,7 +149,6 @@ public class Automapper extends GPSBase {
 	
 	@Override
 	public void paintComponent(Graphics g) {
-		System.out.println("called");
 		super.paintComponent(g);
 		this.draw(g);
 	}
