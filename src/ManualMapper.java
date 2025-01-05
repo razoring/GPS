@@ -110,6 +110,7 @@ public class ManualMapper extends GPSBase {
 
 	@Override
 	void draw(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 
 		for (Node node : intersections) {

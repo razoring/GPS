@@ -24,6 +24,7 @@ public class GPSApp extends GPSBase {
 
 	@Override
 	void draw(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
 		Color lvl[] = {Color.green, new Color(226,186,52),Color.red};
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 
@@ -36,13 +37,13 @@ public class GPSApp extends GPSBase {
 				} else {
 					g.setColor(lvl[node.congestion]);
 				}
+			    g2d.setStroke(new BasicStroke(5));
 				g.drawLine(node.x, node.y, node.next.x, node.next.y);
 			}
 		}
 		
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
-				Graphics2D g2d = (Graphics2D) g;
 				g.setColor(lvl[node.congestion]);
 				if (node.next!=null) {
 					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
@@ -79,6 +80,7 @@ public class GPSApp extends GPSBase {
 		try {
 			if (elapsed>=1200) { // 2 minute timer
 				elapsed = 0;
+				print("Refreshed");
 				generateTraffic();
 			}
 			
