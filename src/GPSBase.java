@@ -136,5 +136,11 @@ abstract class GPSBase extends JPanel {
 		}
 	}
 	
+	@Override
+    public void paintComponent(Graphics g) {
+		System.out.println("called2");
+        super.paintComponent(g);
+    }
+	
 	abstract void draw(Graphics g);
 }

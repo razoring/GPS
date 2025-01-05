@@ -159,6 +159,7 @@ public class Automapper extends GPSBase {
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		System.out.println("called");
 		super.paintComponent(g);
 		this.draw(g);
 	}

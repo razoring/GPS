@@ -19,22 +19,22 @@ public class GPSApp extends GPSBase {
 	static GPSApp panel = new GPSApp("src/8.PNG");
 
 	public GPSApp(String imagePath) {
-		super(imagePath);
-		mapImage = new ImageIcon(imagePath).getImage();
-		
-		readFromFile();
-		
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int x = e.getX();
-				int y = e.getY();
+        super(imagePath);
+        mapImage = new ImageIcon(imagePath).getImage();
 
-				drawMap(x, y, findNearestNode(x, y, 10));
-				frame.repaint();
-			}
-		});
-	}
+        readFromFile();
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+
+                drawMap(x, y, findNearestNode(x, y, 10));
+                repaint();
+            }
+        });
+    }
 
 	void drawMap(int x, int y, Node node) {
 		
