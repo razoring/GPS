@@ -1,7 +1,9 @@
 public class Node {
 	int x;
 	int y;
-	int congestion;
+	int congestion; // traffic values
+	int unweighted; // distance relative to other nodes
+	int weight; // relative to destination (accounts for distance + congestion)
 	String type;
 	Node next;
 	Node prev;
@@ -11,13 +13,15 @@ public class Node {
 	}
 	
 	private int random() {
-	    return (int) (Math.random() * 3) - 1;
+	    return (int)(Math.random()*3)-1;
 	}
 	
 	public Node(int xx, int yy, String nodeType) {
 		x = xx;
 		y = yy;
 		congestion = 1;
+		unweighted = 0;
+		weight = 0;
 		type = nodeType;
 		next = null;
 		prev = null;

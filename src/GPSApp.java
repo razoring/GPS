@@ -44,15 +44,15 @@ public class GPSApp extends GPSBase {
 		
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
-				g.setColor(lvl[node.congestion]);
+				g.setColor(Color.black);
 				if (node.next!=null) {
 					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
 					g2d.setFont(text);
-					g2d.drawString(((int)(findDistance(node,findNext(node))/3.78)*2+10)+"km/h", node.x+5, node.y-5);
+					g2d.drawString(((int)(findDistance(node,findNext(node))/3.78)*2+10)+"km/h", node.x+5, node.y-5); // find the distance divided by 3.78 (conversion of 1 px to 1 km) then amplify by 2 and add the univsersal base speed of 10
 
-					g.setColor(lvl[node.congestion]);
+					//g.setColor(lvl[node.congestion]);
 				} else {
-					g.setColor(lvl[findPrev(node.prev).congestion]);
+					//g.setColor(lvl[findPrev(node.prev).congestion]);
 				}
 				g.fillOval(node.x - 5, node.y - 5, 10, 10);
 			}
