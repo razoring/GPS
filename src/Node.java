@@ -26,10 +26,6 @@ public class Node {
 	public void setTraffic() {
 		this.congestion = clamp(this.congestion+random(),0,2);
 	}
-	
-	public double distance(Node target) {
-		return Math.sqrt(Math.abs(target.x-this.x)+Math.abs(target.y-this.y)); // pythagorean theorem
-	}
 
 	public String name() {
 		return "[this."+this.type+" @ ("+this.x+","+this.y+")]";

@@ -142,6 +142,10 @@ abstract class GPSBase extends JPanel {
 			return node.prev;
 		}
 	}
+
+	public double findDistance(Node base, Node target) {
+		return Math.sqrt(Math.abs(target.x-base.x)+Math.abs(target.y-base.y)); // pythagorean theorem
+	}
 	
 	abstract void draw(Graphics g);
 	
