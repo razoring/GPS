@@ -7,7 +7,7 @@ import javax.swing.*;
 public class GPSApp extends GPSBase {
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
-	static long elapsed = System.currentTimeMillis();
+	static int elapsed = 0;
 
 	public GPSApp(String imagePath) {
         super(imagePath);
@@ -45,8 +45,11 @@ public class GPSApp extends GPSBase {
 				Graphics2D g2d = (Graphics2D) g;
 				g.setColor(lvl[node.congestion]);
 				if (node.next!=null) {
+					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
+					g2d.setFont(text);
+					g2d.drawString(((int)(node.distance(findNext(node))/3.78)*2+10)+"km/h", node.x+5, node.y-5);
+
 					g.setColor(lvl[node.congestion]);
-					g2d.drawString(((int)(node.distance(findNext(node))/3.78)*2+10)+"km/h", node.x, node.y+15);
 				} else {
 					g.setColor(lvl[findPrev(node.prev).congestion]);
 				}
@@ -72,14 +75,22 @@ public class GPSApp extends GPSBase {
 	}
 	
 	@Override
-	public void paintComponent(Graphics g) {
-		if (elapsed%1200==0) {
-			generateTraffic();
-			elapsed = System.currentTimeMillis();
+	public void paintComponent(Graphics g) { // TODO: DO NOT REFRESH EXTERNALLY
+		try {
+			if (elapsed>=1200) { // 2 minute timer
+				elapsed = 0;
+				generateTraffic();
+			}
+			
+			super.paintComponent(g);
+			this.draw(g);
+			
+			elapsed++;
+			Thread.sleep(100); // delay every 100 ms, still responsive on user input
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		super.paintComponent(g);
-		this.draw(g);
-		repaint(); // recursive forever loop to update traffic
+		repaint(); // recursive loop, fix to calling non-static methods in STATIC main while loop
 	}
 }
