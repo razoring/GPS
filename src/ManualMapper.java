@@ -32,8 +32,10 @@ public class ManualMapper extends GPSBase {
         			repaint();
                 } else {
                 	if (e.isControlDown()) {
-        				mode = "CURVE";
         				print("KEYBIND: CURVE");
+                        Node newNode = new Node(x, y, "CURVE");
+                    	nodes.add(newNode);
+                    	curves.add(newNode);
                 	} else if (e.isShiftDown()) {
                 		mode = "LINK";
         				print("KEYBIND: LINK");
