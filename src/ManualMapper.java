@@ -18,7 +18,7 @@ public class ManualMapper extends GPSBase {
 				int x = e.getX();
 				int y = e.getY();
 
-                if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()) {
+                if (SwingUtilities.isRightMouseButton(e)) {
                 	Node node = findNearestNode(x, y, 10);
         			if (node != null) {
         				nodes.remove(node);
@@ -29,6 +29,7 @@ public class ManualMapper extends GPSBase {
         				if (node.next != null)
         					node.next.prev = node.prev;
         			}
+        			repaint();
                 } else {
                 	drawMap(x, y, findNearestNode(x, y, 10));
                 }
