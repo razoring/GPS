@@ -20,34 +20,24 @@ public class ManualMapper extends GPSBase {
 
             	Node node = findNearestNode(x, y, 10);
                 if (SwingUtilities.isRightMouseButton(e)) {
-        			if (node != null) {
-        				nodes.remove(node);
-        				intersections.remove(node);
-        				curves.remove(node);
-        				if (node.prev != null)
-        					node.prev.next = node.next;
-        				if (node.next != null)
-        					node.next.prev = node.prev;
-        			}
-        			repaint();
+                	if (e.isAltDown()) {
+                		mode = "INFO";
+                	} else {
+                		mode = "DELETE";
+                	}
                 } else {
                 	if (e.isControlDown()) {
-        				print("KEYBIND: CURVE");
-                        Node newNode = new Node(x, y, "CURVE");
-                    	nodes.add(newNode);
-                    	curves.add(newNode);
+                		mode = "CURVE";
                 	} else if (e.isShiftDown()) {
                 		mode = "LINK";
-        				print("KEYBIND: LINK");
                 	} else if (e.isAltDown()) {
                 		mode = "SELECT";
-        				print("KEYBIND: SELECT");
                 	} else {
                 		mode = "ADD";
-        				print("KEYBIND: ADD");
                 	}
-                	drawMap(x, y, node);
                 }
+				print("KEYBIND: "+mode);
+            	drawMap(x, y, node);
 			}
 		});
 	}
