@@ -19,7 +19,7 @@ public class GPSApp extends GPSBase {
                 int x = e.getX();
                 int y = e.getY();
                 
-                print(findConnections(findNearestNode(x,y,50)));
+                print(findConnections(findNearestNode(x,y,50)).size());
                 
                 /*
                 if (selectedNode1 == null) {
@@ -84,6 +84,7 @@ public class GPSApp extends GPSBase {
 		frame.setSize(1200, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		frame.setResizable(false);
 	}
 	
 	@Override
