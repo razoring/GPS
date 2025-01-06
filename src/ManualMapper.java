@@ -18,8 +18,20 @@ public class ManualMapper extends GPSBase {
 				int x = e.getX();
 				int y = e.getY();
 
-				drawMap(x, y, findNearestNode(x, y, 10));
-				frame.repaint();
+                if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()) {
+                	Node node = findNearestNode(x, y, 10);
+        			if (node != null) {
+        				nodes.remove(node);
+        				intersections.remove(node);
+        				curves.remove(node);
+        				if (node.prev != null)
+        					node.prev.next = node.next;
+        				if (node.next != null)
+        					node.next.prev = node.prev;
+        			}
+                } else {
+                	drawMap(x, y, findNearestNode(x, y, 10));
+                }
 			}
 		});
 	}
