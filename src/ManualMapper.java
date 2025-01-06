@@ -166,6 +166,7 @@ public class ManualMapper extends GPSBase {
 		frame.setSize(1200, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		frame.setResizable(false);
 
 		Scanner input = new Scanner(System.in);
 		while (true) {

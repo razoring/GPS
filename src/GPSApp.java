@@ -84,7 +84,6 @@ public class GPSApp extends GPSBase {
 		frame.setSize(1200, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		frame.setResizable(false);
 
 	}
 	
