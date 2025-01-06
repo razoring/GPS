@@ -18,6 +18,17 @@ public class GPSApp extends GPSBase {
             public void mouseClicked(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
+                
+                print(findConnections(findNearestNode(x,y,50)));
+                
+                /*
+                if (selectedNode1 == null) {
+                	print("1");
+                    selectedNode1 = findNearestNode(x,y,50);
+                } else {
+                	print("2");
+                    selectedNode2 = findNearestNode(x,y,50);
+                }*/
             }
         });
     }

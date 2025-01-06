@@ -6,8 +6,6 @@ import javax.swing.*;
 
 public class ManualMapper extends GPSBase {
 	static String mode = "ADD";
-	static Node selectedNode1 = null;
-	static Node selectedNode2 = null;
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static ManualMapper panel = new ManualMapper("src/8.PNG");

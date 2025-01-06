@@ -147,6 +147,16 @@ abstract class GPSBase extends JPanel {
 		return Math.sqrt(Math.abs(target.x-base.x)+Math.abs(target.y-base.y)); // pythagorean theorem
 	}
 	
+	public ArrayList<String> findConnections(Node base) {
+		ArrayList<String> list = new ArrayList<String>();
+		for (Node node : nodes) {
+			if (node.next == base || node.prev == base) {
+				list.add(node.name());
+			}
+		}
+		return list;
+	}
+	
 	abstract void draw(Graphics g);
 	
 	// print functions to act like python
