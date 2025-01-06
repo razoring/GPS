@@ -128,19 +128,26 @@ abstract class GPSBase extends JPanel {
 	}
 	
 	public Node findNext(Node node) {
-		if (node.next.type.equals("CURVE")) {
-			return findNext(node.next);
-		} else {
-			return node.next;
+		if (node.next!=null) {
+			if (node.next.type.equals("CURVE")) {
+				return findNext(node.next);
+			} else {
+				return node.next;
+			}
 		}
+		return null;
 	}
 	
 	public Node findPrev(Node node) {
-		if (node.prev.type.equals("CURVE")) {
-			return findPrev(node.prev);
-		} else {
-			return node.prev;
+		if (node.prev!=null) {
+			if (node.prev.type.equals("CURVE")) {
+				return findPrev(node.prev);
+			} else {
+				print(node.prev.type);
+				return node.prev;
+			}
 		}
+		return null;
 	}
 
 	public double findDistance(Node base, Node target) {
@@ -150,8 +157,9 @@ abstract class GPSBase extends JPanel {
 	public ArrayList<String> findConnections(Node base) {
 		ArrayList<String> list = new ArrayList<String>();
 		for (Node node : nodes) {
-			if (node.next == base || node.prev == base) {
+			if ((node.next!=null && findNext(node) == base) || (node.prev!=null && findPrev(node) == base)) {
 				list.add(node.name());
+				print(node.name());
 			}
 		}
 		return list;

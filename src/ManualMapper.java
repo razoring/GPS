@@ -32,23 +32,16 @@ public class ManualMapper extends GPSBase {
         			repaint();
                 } else {
                 	if (e.isControlDown()) {
-            			if (selectedNode1 == null) {
-            				selectedNode1 = findNearestNode(x, y, 10);
-                            System.err.println("Selected node: (" + node.x + ", " + node.y + ")");
-            			} else {
-            				selectedNode2 = findNearestNode(x, y, 10);
-            				if (selectedNode1 != null && selectedNode2 != null && selectedNode1 != selectedNode2) {
-            	                System.err.println("Selected node: (" + node.x + ", " + node.y + ")");
-                                System.out.println("Current mode is (LINK), linking from ("+selectedNode2.x+","+selectedNode2.y+")");
-            					selectedNode1.next = selectedNode2;
-            					selectedNode2.prev = selectedNode1;
-            					selectedNode1 = selectedNode2;
-            					selectedNode2 = null;
-            				}
-            			}
-                	} else {
-                    	drawMap(x, y, node);
+        				mode = "CURVE";
+        				print("KEYBIND: CURVE");
+                	} else if (e.isShiftDown()) {
+                		mode = "LINK";
+        				print("KEYBIND: LINK");
+                	} else if (e.isAltDown()) {
+                		mode = "SELECT";
+        				print("KEYBIND: SELECT");
                 	}
+                	drawMap(x, y, node);
                 }
 			}
 		});
