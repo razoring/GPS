@@ -40,6 +40,9 @@ public class ManualMapper extends GPSBase {
                 	} else if (e.isAltDown()) {
                 		mode = "SELECT";
         				print("KEYBIND: SELECT");
+                	} else {
+                		mode = "ADD";
+        				print("KEYBIND: ADD");
                 	}
                 	drawMap(x, y, node);
                 }
@@ -100,8 +103,6 @@ public class ManualMapper extends GPSBase {
         	curves.add(newNode);
         } else if (mode.equals("INFO")) {
         	System.out.println(findNearestNode(x,y,10));
-        } else if (mode.equals("NEXT")) {
-        	System.out.println(findNext(findNearestNode(x,y,10)));
         }
 		
 		saveToFile();
