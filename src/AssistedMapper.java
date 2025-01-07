@@ -51,13 +51,18 @@ public class AssistedMapper extends GPSBase {
 			}
 		} else if (mode.equals("DELETE")) {
 			if (node != null) {
-				nodes.remove(node);
-				intersections.remove(node);
-				curves.remove(node);
-				if (node.prev != null)
-					node.prev.next = node.next;
-				if (node.next != null)
-					node.next.prev = node.prev;
+				if (node.prev==node.next) {
+					nodes.remove(node);
+					intersections.remove(node);
+					curves.remove(node);
+					if (node.prev != null)
+						node.prev.next = node.next;
+					if (node.next != null)
+						node.next.prev = node.prev;
+				} else {
+					node.prev = null;
+					node.next = null;
+				}
 			}
 		} else if (mode.equals("LINK")) {
 			if (selectedNode1 == null) {

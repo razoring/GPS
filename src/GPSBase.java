@@ -157,9 +157,12 @@ abstract class GPSBase extends JPanel {
 	    ArrayList<String> list = new ArrayList<>();
 	    for (Node node : nodes) {
             if (node.type.equals("INTERSECTION")) {
-            	if ((findNext(node) == base) || (findPrev(node) == base)) {
+            	if ((findNext(node) == base)) {
 	                list.add(node.name());
 	            }
+            	if ((findPrev(node) == base)) {
+	                list.add(node.name());
+            	}
 	        }
 	    }
 	    return list;

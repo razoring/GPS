@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import java.util.Arrays;
 
 public class GPSApp extends GPSBase {
 	static JFrame frame = new JFrame("Map with Mouse Listener");
@@ -19,7 +20,8 @@ public class GPSApp extends GPSBase {
                 int x = e.getX();
                 int y = e.getY();
                 
-                print(x,y);
+                print(findNearestNode(x,y,10).name());
+                print(Arrays.deepToString(nodes.toArray()));
                 print(findConnections(findNearestNode(x,y,50)).size());
                 
                 /*
