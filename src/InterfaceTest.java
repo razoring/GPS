@@ -32,7 +32,7 @@ public class InterfaceTest extends JFrame {
         info.add(buttonLayout, BorderLayout.CENTER);
         info.add(new JPanel(), BorderLayout.WEST);
         info.add(new JPanel(), BorderLayout.EAST);
-        return info;
+        return info; 
     } 
 
     public static void main(String[] args) {
