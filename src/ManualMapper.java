@@ -4,13 +4,13 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
-public class AssistedMapper extends GPSBase {
+public class ManualMapper extends GPSBase {
 	static String mode = "ADD";
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
-	static AssistedMapper panel = new AssistedMapper("src/8.PNG");
+	static ManualMapper panel = new ManualMapper("src/8.PNG");
 
-	public AssistedMapper(String imagePath) {
+	public ManualMapper(String imagePath) {
 		super(imagePath);
 		addMouseListener(new MouseAdapter() {
 			@Override
