@@ -20,18 +20,19 @@ public class GPSApp extends GPSBase {
                 int x = e.getX();
                 int y = e.getY();
                 
-                print(findNearestNode(x,y,10).name());
-                print(Arrays.deepToString(nodes.toArray()));
-                print(findConnections(findNearestNode(x,y,50)).size());
-                
-                /*
+                //print(findNearestNode(x,y,10));
+                //print(Arrays.deepToString(nodes.toArray()));
+                //print(findConnections(findNearestNode(x,y,50)).size());
+
                 if (selectedNode1 == null) {
                 	print("1");
                     selectedNode1 = findNearestNode(x,y,50);
                 } else {
                 	print("2");
                     selectedNode2 = findNearestNode(x,y,50);
-                }*/
+                }
+                
+                algorithm("Primitive",selectedNode1,selectedNode2,new ArrayList<Node>());
             }
         });
     }
@@ -111,5 +112,20 @@ public class GPSApp extends GPSBase {
 			e.printStackTrace();
 		}
 		repaint(); // recursive loop, fix to calling non-static methods in STATIC main while loop
+	}
+	
+	public void algorithm(String type, Node current, Node end, ArrayList points) {
+		if (type.equals("Primitive")) { // first type of algorithm
+			if (current != end) {
+				int x = current.x;
+				int y = current.y;
+				int radius = 0;
+				while (findNearestNode(x,y,radius)==null) {
+					print(radius);
+					radius++;
+				}
+				print(findNearestNode(x,y,radius));
+			}
+		}
 	}
 }

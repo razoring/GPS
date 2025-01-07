@@ -158,14 +158,14 @@ public class AssistedMapper extends GPSBase {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
-
+		/*
 		Scanner input = new Scanner(System.in);
 		while (true) {
 			System.out.println("Set Mode (" + mode + "): ");
 			mode = input.nextLine().toUpperCase();
 			selectedNode1 = null;
 			selectedNode2 = null;
-		}
+		}*/
 	}
 	
 	@Override
