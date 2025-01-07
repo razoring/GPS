@@ -5,8 +5,8 @@ public class Node {
 	int unweighted; // distance relative to other nodes
 	int weight; // relative to destination (accounts for distance + congestion)
 	String type;
-	Node next;
-	Node prev;
+	Node next[] = new Node[2];
+	Node prev[] = new Node[2];
 
 	private static int clamp(int val, int min, int max) {
 	    return Math.max(min,Math.min(max,val));
@@ -31,28 +31,13 @@ public class Node {
 		this.congestion = clamp(this.congestion+random(),0,2);
 	}
 
-	public String name() {
-		return "[this."+this.type+" @ ("+this.x+","+this.y+")]";
-	}
-
 	@Override
 	public String toString() {
-		String next = "";
-		String prev = "";
-		
-		if (this.next!=null) {
-			next = this.next.type+"("+this.next.x+","+this.next.y;
-		} else {
-			next = "(null";
-		}
-		
-		if (this.prev!=null) {
-			prev = this.prev.type+"("+this.prev.x+","+this.prev.y;
-		} else {
-			prev = "(null";
-		}
-		
-		return "[this."+this.type+"("+this.x+","+this.y+"),next."+next+"),previous."+prev+")]";
-		// [this.INTERSECTION(500,500),next.CURVE(200,200),previous.INTERSECTION(100,100)]
+		return this.type+"("+this.x+","+this.y+")";
+	}
+	
+	public String toSave() {
+		return "{"+this.type+"("+this.x+","+this.y+");NEXT("+this.next.toString()+");PREV["+this.prev.toString()+"]}";
+		// {INTERSECTION(500,500);NEXT[INTERSECTION(200,200),CURVE(100,100)];PREV[INTERSECTION(300,300),INTERSECTION(400,400)]}
 	}
 }

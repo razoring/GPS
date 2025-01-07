@@ -32,7 +32,7 @@ public class GPSApp extends GPSBase {
                     selectedNode2 = findNearestNode(x,y,50);
                 }
                 
-                algorithm("Primitive",selectedNode1,selectedNode2,new ArrayList<Node>());
+                algorithm("DFS",selectedNode1,selectedNode2,new ArrayList<Node>(),new ArrayList<Node>());
             }
         });
     }
@@ -66,7 +66,7 @@ public class GPSApp extends GPSBase {
 					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
 					g2d.setFont(text);
 					g2d.drawString(((int)(findDistance(node,findNext(node))/3.78)*2+10)+"km/h", node.x+5, node.y-5); // find the distance divided by 3.78 (conversion of 1 px to 1 km) then amplify by 2 and add the univsersal base speed of 10
-					g2d.drawString(node.name(), node.x+10, node.y-10);
+					g2d.drawString(node.toString(), node.x+10, node.y-10);
 
 					//g.setColor(lvl[node.congestion]);
 				} else {
@@ -114,7 +114,7 @@ public class GPSApp extends GPSBase {
 		repaint(); // recursive loop, fix to calling non-static methods in STATIC main while loop
 	}
 	
-	public void algorithm(String type, Node current, Node end, ArrayList points) {
+	public void algorithm(String type, Node current, Node end, ArrayList visited, ArrayList stack) {
 		if (type.equals("Primitive")) { // first type of algorithm
 			if (current != end) {
 				int x = current.x;
@@ -126,6 +126,8 @@ public class GPSApp extends GPSBase {
 				}
 				print(findNearestNode(x,y,radius));
 			}
+		} else if (type.equals("DFS")) {
+			
 		}
 	}
 }
