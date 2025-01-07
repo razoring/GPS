@@ -128,26 +128,27 @@ abstract class GPSBase extends JPanel {
 	}
 	
 	public Node findNext(Node node) {
-		if (node.next!=null) {
-			if (node.next.type.equals("CURVE")) {
-				return findNext(node.next);
-			} else {
-				return node.next;
-			}
-		}
-		return null;
+	    if (node == null) return null; // handle null node
+	    if (node.next != null) {
+	        if (node.next.type.equals("INTERSECTION")) {
+	            return node.next;
+	        } else {
+	            return findNext(node.next);
+	        }
+	    }
+	    return null;
 	}
-	
+
 	public Node findPrev(Node node) {
-		if (node.prev!=null) {
-			if (node.prev.type.equals("CURVE")) {
-				return findPrev(node.prev);
-			} else {
-				print(node.prev.type);
-				return node.prev;
-			}
-		}
-		return null;
+	    if (node == null) return null; // handle null node
+	    if (node.prev != null) {
+	        if (node.prev.type.equals("INTERSECTION")) {
+	            return node.prev;
+	        } else {
+	            return findPrev(node.prev);
+	        }
+	    }
+	    return null;
 	}
 
 	public double findDistance(Node base, Node target) {
@@ -155,16 +156,18 @@ abstract class GPSBase extends JPanel {
 	}
 	
 	public ArrayList<String> findConnections(Node base) {
-		ArrayList<String> list = new ArrayList<String>();
-		for (Node node : nodes) {
-			if ((node.next!=null && findNext(node) == base) || (node.prev!=null && findPrev(node) == base)) {
-				list.add(node.name());
-				print(node.name());
-			}
-		}
-		return list;
+	    ArrayList<String> list = new ArrayList<>();
+	    for (Node node : nodes) {
+            if (node.type.equals("INTERSECTION")) {
+            	if ((findNext(node) == base) || (findPrev(node) == base)) {
+	                list.add(node.name());
+	                print(node.name());
+	            }
+	        }
+	    }
+	    return list;
 	}
-	
+
 	abstract void draw(Graphics g);
 	
 	// print functions to act like python
