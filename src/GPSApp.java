@@ -44,7 +44,9 @@ public class GPSApp extends GPSBase {
 			if (node.next != null) {
 				if (node.type.equals("CURVE")) {
 					if (node.prev != null) {
-						g.setColor(lvl[findPrev(node).congestion]);
+						if (findPrev(node)!=null) {
+							g.setColor(lvl[findPrev(node).congestion]);
+						}
 					}
 				} else {
 					g.setColor(lvl[node.congestion]);

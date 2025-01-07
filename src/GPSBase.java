@@ -128,27 +128,25 @@ abstract class GPSBase extends JPanel {
 	}
 	
 	public Node findNext(Node node) {
-	    if (node == null) return null; // handle null node
-	    if (node.next != null) {
-	        if (node.next.type.equals("INTERSECTION")) {
-	            return node.next;
-	        } else {
-	            return findNext(node.next);
-	        }
-	    }
-	    return null;
+		if (node.next!=null) {
+			if (node.next.type.equals("INTERSECTION")) {
+				return node.next;
+			} else {
+				return findNext(node.next);
+			}
+		}
+		return null;
 	}
-
+	
 	public Node findPrev(Node node) {
-	    if (node == null) return null; // handle null node
-	    if (node.prev != null) {
-	        if (node.prev.type.equals("INTERSECTION")) {
-	            return node.prev;
-	        } else {
-	            return findPrev(node.prev);
-	        }
-	    }
-	    return null;
+		if (node.prev!=null) {
+			if (node.prev.type.equals("INTERSECTION")) {
+				return node.prev;
+			} else {
+				return findPrev(node.prev);
+			}
+		}
+		return null;
 	}
 
 	public double findDistance(Node base, Node target) {
@@ -161,7 +159,6 @@ abstract class GPSBase extends JPanel {
             if (node.type.equals("INTERSECTION")) {
             	if ((findNext(node) == base) || (findPrev(node) == base)) {
 	                list.add(node.name());
-	                print(node.name());
 	            }
 	        }
 	    }
