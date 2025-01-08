@@ -5,13 +5,13 @@ import java.util.*;
 import javax.swing.*;
 
 abstract class GPSBase extends JPanel {
-	Image mapImage;
-	static String mode = "ADD";
-	HashSet<Node> nodes = new HashSet<>();
-	HashSet<Node> intersections = new HashSet<>();
-	HashSet<Node> curves = new HashSet<>();
-	static Node selectedNode1 = null;
-	static Node selectedNode2 = null;
+	public Image mapImage;
+	public static String mode = "ADD";
+	public HashSet<Node> nodes = new HashSet<>();
+	public HashSet<Node> intersections = new HashSet<>();
+	public HashSet<Node> curves = new HashSet<>();
+	public static Node selectedNode1 = null;
+	public static Node selectedNode2 = null;
 
 	public GPSBase(String imagePath) {
 		mapImage = new ImageIcon(imagePath).getImage();
