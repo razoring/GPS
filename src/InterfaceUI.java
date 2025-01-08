@@ -5,11 +5,11 @@ import java.util.*;
 import javax.swing.*;
 import java.util.Arrays;
 
-public class InterfaceTest extends JFrame {
+public class InterfaceUI extends JFrame {
 
     private BorderLayout inter = new BorderLayout();
 
-    public InterfaceTest() {
+    public InterfaceUI() {
         super("Interface Test");
         setLayout(inter);
 
@@ -36,7 +36,7 @@ public class InterfaceTest extends JFrame {
     } 
 
     public static void main(String[] args) {
-        InterfaceTest app = new InterfaceTest();
+        InterfaceUI app = new InterfaceUI();
 		app.setSize(1400, 600); // set frame size
 		app.setVisible(true); // display frame
     }

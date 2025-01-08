@@ -7,7 +7,6 @@ import javax.swing.*;
 public class AssistedMapper extends GPSBase {
 	static String mode = "ADD";
 	static boolean cursorSize = true;
-	static boolean tempSize = false;
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static AssistedMapper panel = new AssistedMapper("src/8.PNG");
