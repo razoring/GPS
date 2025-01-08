@@ -7,6 +7,7 @@ import javax.swing.*;
 public class AssistedMapper extends GPSBase {
 	static String mode = "ADD";
 	static boolean cursorSize = true;
+	static boolean tempSize = false;
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static AssistedMapper panel = new AssistedMapper("src/8.PNG");
@@ -169,7 +170,7 @@ public class AssistedMapper extends GPSBase {
 		for (Node node : nodes) {
 			if (node.next != null) {
 				for (Node next : node.next) {
-					g.drawLine(node.x, node.y, next.x, next.y);
+					g.drawLine(node.x+(node.size==1?5:3), node.y+(node.size==1?5:3), next.x+(next.size==1?5:3), next.y+(next.size==1?5:3));
 				}
 			}
 		}
