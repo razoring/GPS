@@ -6,6 +6,8 @@ import javax.swing.*;
 
 public class AssistedMapper extends GPSBase {
 	static String mode = "ADD";
+	static boolean cursorSize = true;
+	static boolean tempSize = false;
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static AssistedMapper panel = new AssistedMapper("src/8.PNG");
@@ -28,6 +30,7 @@ public class AssistedMapper extends GPSBase {
                 } else {
                 	if (e.isControlDown()) {
                 		mode = "CURVE";
+                		cursorSize = false;
                 	} else if (e.isShiftDown()) {
                 		mode = "LINK";
                 	} else if (e.isAltDown()) {
@@ -40,12 +43,23 @@ public class AssistedMapper extends GPSBase {
             	drawMap(x, y, node);
 			}
 		});
+		
+		addKeyListener(new KeyAdapter() {
+			@Override 
+			public void keyPressed(KeyEvent e) { 
+				if (e.getKeyCode() == KeyEvent.VK_CONTROL) { 
+					cursorSize = !cursorSize;
+				} 
+			}
+		});
+		setFocusable(true); 
+		requestFocusInWindow();
 	}
 
 	void drawMap(int x, int y, Node node) {
 		if (mode.equals("ADD")) {
 			if (findNearestNode(x,y,10)==null) {
-				Node newNode = new Node(x, y, "INTERSECTION");
+				Node newNode = new Node(x, y, "INTERSECTION", cursorSize?1:0);
 				intersections.add(newNode);
 				nodes.add(newNode);
 			}
@@ -56,9 +70,13 @@ public class AssistedMapper extends GPSBase {
 					intersections.remove(node);
 					curves.remove(node);
 					if (node.prev != null)
-						node.prev.next = node.next;
+						for (Node prev : node.prev) {
+							prev.next = node.next;
+						}
 					if (node.next != null)
-						node.next.prev = node.prev;
+						for (Node next : node.next) {
+							next.prev = node.prev;
+						}
 				} else {
 					node.prev = null;
 					node.next = null;
@@ -73,8 +91,8 @@ public class AssistedMapper extends GPSBase {
 				if (selectedNode1 != null && selectedNode2 != null && selectedNode1 != selectedNode2) {
 	                System.err.println("Selected node: (" + node.x + ", " + node.y + ")");
                     System.out.println("Current mode is (LINK), linking from ("+selectedNode2.x+","+selectedNode2.y+")");
-					selectedNode1.next = selectedNode2;
-					selectedNode2.prev = selectedNode1;
+                    selectedNode1.add(selectedNode2, "next");
+                    selectedNode2.add(selectedNode1, "prev");
 					selectedNode1 = selectedNode2;
 					selectedNode2 = null;
 				}
@@ -87,15 +105,15 @@ public class AssistedMapper extends GPSBase {
                 } else if (selectedNode2 == null) {
                     selectedNode2 = node;
                     System.err.println("Selected second node: (" + node.x + ", " + node.y + ")");
-                    selectedNode1.next = selectedNode2;
-                    selectedNode2.prev = selectedNode1;
+                    selectedNode1.add(selectedNode2, "next");
+                    selectedNode2.add(selectedNode1, "prev");
                     selectedNode1 = null;
                     selectedNode2 = null;
                     System.out.println("Clear to make new selection");
                 }
             }
         } else if (mode.equals("CURVE")) {
-            Node newNode = new Node(x, y, "CURVE");
+            Node newNode = new Node(x, y, "CURVE", 0);
         	nodes.add(newNode);
         	curves.add(newNode);
         } else if (mode.equals("INFO")) {
@@ -115,11 +133,12 @@ public class AssistedMapper extends GPSBase {
 				FileWriter writer = new FileWriter(save);
 				String result = "";
 				for (Node node : nodes) {
-					result = result+node.toString()+"\n";
+					result = result+node.toSave()+"\n";
 				}
 				//System.out.println(result);
 				writer.write(result);
 				writer.close();
+				print(result);
 			}
 		} catch (IOException e) {
 			System.out.println("An error occurred.");
@@ -134,30 +153,45 @@ public class AssistedMapper extends GPSBase {
 
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
-				g.fillOval(node.x - 5, node.y - 5, 10, 10);
+				if (node.size==1) {
+					g.fillOval(node.x, node.y, 10, 10);
+				} else {
+					g.fillOval(node.x, node.y, 6, 6);
+				}
 			}
 		}
 
 		for (Node node : curves) {
 			if (nodes.contains(node)) {
-				g.drawOval(node.x - 3, node.y - 3, 6, 6);
+				g.drawOval(node.x, node.y, 6, 6);
 			}
 		}
 
 		for (Node node : nodes) {
 			if (node.next != null) {
-				g.drawLine(node.x, node.y, node.next.x, node.next.y);
+				for (Node next : node.next) {
+					g.drawLine(node.x, node.y, next.x, next.y);
+				}
 			}
 		}
 	}
 
 	public static void main(String[] args) {
-		frame.setCursor(Cursor.CROSSHAIR_CURSOR);
 		frame.add(panel);
 		frame.setSize(1200, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
+
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image big = toolkit.getImage("src/Cursors/10x.png");
+		Image small = toolkit.getImage("src/Cursors/6x.png");
+		Cursor bCursor = toolkit.createCustomCursor(big , new Point(frame.getX(), frame.getY()), "cursor");
+		Cursor sCursor = toolkit.createCustomCursor(small , new Point(frame.getX(), frame.getY()), "cursor");
+		while (true) {
+			Cursor cursors[] = {sCursor,bCursor}; 
+			frame.setCursor(cursors[cursorSize?1:0]);
+		}
 		/*
 		Scanner input = new Scanner(System.in);
 		while (true) {
