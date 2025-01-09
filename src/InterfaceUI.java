@@ -26,7 +26,6 @@ public class InterfaceUI extends JFrame {
         ui.add(new JPanel(), BorderLayout.EAST);
 
         //Top
-        //JPanel topMain = new JPanel(new GridLayout(2, 1, 10, 5));
         JPanel topPanel = new JPanel(new GridLayout(4, 1, 10, 5));
 
         JButton start = new JButton("[Starting Point]");
@@ -38,24 +37,29 @@ public class InterfaceUI extends JFrame {
         topPanel.add(destination);
         topPanel.add(routeCalculate);
 
-       // topMain.add(topPanel);
-
         //Bottom
-        //JPanel bottomMain = new JPanel(new GridLayout(2, 1, 10, 5));
         JPanel bottomPanel = new JPanel(new GridLayout(5, 1, 10, 5));
 
         JButton quickest = new JButton("[Fastest Route]");
-        JButton ignoreTraffic = new JButton("[Ignore Traffic]");
-        JButton trafficOnly = new JButton("[Traffic Only]");
-        JButton speedOnly = new JButton("[Speed Only]");
 
-        bottomPanel.add(new JLabel("Routes", SwingConstants.CENTER));
+        //Traffic Box
+        JPanel trafficCheck = new JPanel(new FlowLayout());
+        JCheckBox traffic = new JCheckBox();
+        JLabel trafficCheckLabel = new JLabel("Consider Traffic");
+        trafficCheck.add(trafficCheckLabel);
+        trafficCheck.add(traffic);
+
+        //Speed Box
+        JPanel speedCheck = new JPanel(new FlowLayout());
+        JCheckBox speed = new JCheckBox();
+        JLabel speedCheckLabel = new JLabel("Consider Speed Limit");
+        speedCheck.add(speedCheckLabel);
+        speedCheck.add(speed);
+
+        bottomPanel.add(new JLabel("Route Options", SwingConstants.CENTER));
         bottomPanel.add(quickest);
-        bottomPanel.add(ignoreTraffic);
-        bottomPanel.add(trafficOnly);
-        bottomPanel.add(speedOnly);
-
-        //bottomMain.add(bottomPanel);
+        bottomPanel.add(trafficCheck);
+        bottomPanel.add(speedCheck);
 
         //Main UI
         group.add(topPanel);
