@@ -44,16 +44,8 @@ public class GPSApp extends GPSBase {
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 		
 		for (Node node : nodes) {
+			g.setColor(lvl[node.congestion]);
 			if (node.next != null) {
-				if (node.type.equals("CURVE")) {
-					if (node.prev != null) {
-						for (Node prev : node.prev) {
-							g.setColor(lvl[prev.congestion]);
-						}
-					}
-				} else {
-					g.setColor(lvl[node.congestion]);
-				}
 			    g2d.setStroke(new BasicStroke(5));
 				for (Node next : node.next) {
 					g.drawLine(node.x, node.y, next.x, next.y);
@@ -69,11 +61,11 @@ public class GPSApp extends GPSBase {
 					g2d.setFont(text);
 					for (Node next : node.next) {
 						// find the distance divided by 3.78 (conversion of 1 px to 1 km) then amplify by 2 and add the univsersal base speed of 10
-						g2d.drawString(((int)(findDistance(node,next)/3.78)*2+10)+"km/h", node.x+5, node.y-5);
+						g2d.drawString(((int)(findDistance(node,next)/3.78)*2+20)+"km/h", node.x+5, node.y-5);
 					}
-					g2d.drawString(node.toString(), node.x+10, node.y-10);
+					//g2d.drawString(node.toString(), node.x+10, node.y-10);
 				}
-				if (node.size==0) {
+				if (node.size==1) {
 					g.fillOval(node.x - 5, node.y - 5, 10, 10);
 				} else {
 					g.fillOval(node.x - 3, node.y - 3, 6, 6);
@@ -101,7 +93,7 @@ public class GPSApp extends GPSBase {
 	@Override
 	public void paintComponent(Graphics g) { // TODO: DO NOT REFRESH EXTERNALLY
 		try {
-			if (elapsed>=1200) { // 2 minute timer
+			if (elapsed>=1200/1200) { // 2 minute timer
 				elapsed = 0;
 				print("Refreshed");
 				generateTraffic();

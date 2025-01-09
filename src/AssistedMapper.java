@@ -6,8 +6,7 @@ import javax.swing.*;
 
 public class AssistedMapper extends GPSBase {
 	static String mode = "ADD";
-	static boolean cursorSize = true;
-	static boolean tempSize = false;
+	static Boolean cursorSize = true;
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static AssistedMapper panel = new AssistedMapper("src/8.PNG");
@@ -65,22 +64,17 @@ public class AssistedMapper extends GPSBase {
 			}
 		} else if (mode.equals("DELETE")) {
 			if (node != null) {
-				if (node.prev==node.next) {
-					nodes.remove(node);
-					intersections.remove(node);
-					curves.remove(node);
-					if (node.prev != null)
-						for (Node prev : node.prev) {
-							prev.next = node.next;
-						}
-					if (node.next != null)
-						for (Node next : node.next) {
-							next.prev = node.prev;
-						}
-				} else {
-					node.prev = null;
-					node.next = null;
-				}
+			    boolean isEmptyPrev = (node.prev == null || node.prev.length == 0);
+			    boolean isEmptyNext = (node.next == null || node.next.length == 0);
+			    
+			    if (isEmptyPrev && isEmptyNext) {
+			        nodes.remove(node);
+			        intersections.remove(node);
+			        curves.remove(node);
+			    } else {
+			        node.prev = new Node[0];
+			        node.next = new Node[0];
+			    }
 			}
 		} else if (mode.equals("LINK")) {
 			if (selectedNode1 == null) {
@@ -138,7 +132,6 @@ public class AssistedMapper extends GPSBase {
 				//System.out.println(result);
 				writer.write(result);
 				writer.close();
-				print(result);
 			}
 		} catch (IOException e) {
 			System.out.println("An error occurred.");
@@ -189,6 +182,7 @@ public class AssistedMapper extends GPSBase {
 		Cursor bCursor = toolkit.createCustomCursor(big , new Point(frame.getX(), frame.getY()), "cursor");
 		Cursor sCursor = toolkit.createCustomCursor(small , new Point(frame.getX(), frame.getY()), "cursor");
 		while (true) {
+			
 			Cursor cursors[] = {sCursor,bCursor}; 
 			frame.setCursor(cursors[cursorSize?1:0]);
 		}
