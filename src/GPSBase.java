@@ -15,10 +15,23 @@ abstract class GPSBase extends JPanel {
 
 	public GPSBase(String imagePath) {
 		mapImage = new ImageIcon(imagePath).getImage();
+        clearDuplicates();
 		readFromFile();
 	}
-
-	File save = new File("src/map.txt");
+	
+	public Node findNearestNode(int x, int y, int tolerance) {
+		for (Node node : nodes) {
+			if (Math.abs(node.x - x) <= tolerance && Math.abs(node.y - y) <= tolerance) {
+				return node;
+			}
+		}
+		return null;
+	}
+	
+	public double findDistance(Node base, Node target) {
+		return Math.sqrt(Math.abs(target.x-base.x)+Math.abs(target.y-base.y)); // pythagorean theorem
+	}
+	
 	private Node getNode(String item, Node parent, String position) {
 	    String[] parts = item.split("\\(");
 	    if (parts.length < 2) {
@@ -41,22 +54,31 @@ abstract class GPSBase extends JPanel {
 	    }
 	    
 	    try {
+	    	//print(Arrays.deepToString(nodes.toArray()));
 	        int x = Integer.parseInt(coords[0].trim());
 	        int y = Integer.parseInt(coords[1].substring(0,coords[1].length()-1).trim());
 	        Node newNode = new Node(x, y, type, size);
-
-	        if (!nodes.contains(newNode)) {
+	        
+	        for (Node node : nodes) { // check for duplicates, if found use the duplicate instead
+	        	if (node.x == x && node.y == y) {
+	        		newNode = node;
+		        }
+	        }
+	        
+	        if (!nodes.contains(newNode) || Arrays.deepToString(nodes.toArray()).contains(newNode.toString())) {
 	            nodes.add(newNode);
 	            if ("INTERSECTION".equals(type)) {
 	                intersections.add(newNode);
 	            } else {
 	                curves.add(newNode);
 	            }
-
-	            if (parent != null) {
-	                parent.add(newNode, position);
-	            }
 	        }
+
+            if (parent != null) {
+                parent.add(newNode, position);
+            }
+            
+            //print(Arrays.deepToString(nodes.toArray()));
 	        return newNode;
 	    } catch (NumberFormatException e) {
 	        System.out.println("Error parsing coordinates: " + parts[1]);
@@ -64,6 +86,34 @@ abstract class GPSBase extends JPanel {
 	    }
 	}
 
+	// file handling
+	File save = new File("src/map.txt");
+	public void clearDuplicates() {
+        HashSet<String> uniqueLines = new HashSet<>();
+        ArrayList<String> lines = new ArrayList<>();
+
+        // Read the file
+        try (BufferedReader reader = new BufferedReader(new FileReader(save))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (uniqueLines.add(line.trim())) {
+                    lines.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Write the unique lines back to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(save))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 	
 	public void readFromFile() {
 	    try {
@@ -100,19 +150,6 @@ abstract class GPSBase extends JPanel {
 	        e.printStackTrace();
 	    }
 	}
-
-	public Node findNearestNode(int x, int y, int tolerance) {
-		for (Node node : nodes) {
-			if (Math.abs(node.x - x) <= tolerance && Math.abs(node.y - y) <= tolerance) {
-				return node;
-			}
-		}
-		return null;
-	}
-	
-	public double findDistance(Node base, Node target) {
-		return Math.sqrt(Math.abs(target.x-base.x)+Math.abs(target.y-base.y)); // pythagorean theorem
-	}
 	
 	abstract void draw(Graphics g);
 	
@@ -122,6 +159,10 @@ abstract class GPSBase extends JPanel {
 	}
 	
 	public void print(Object str, Object str2) {
-		System.out.println(str+", "+str2);
+		System.out.println(str+","+str2);
+	}
+	
+	public void print(Object str, Object str2, Object str3, Object str4) {
+		System.out.println(str+","+str2+","+str3+","+str4);
 	}
 }

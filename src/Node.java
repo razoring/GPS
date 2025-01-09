@@ -57,11 +57,15 @@ public class Node {
 	public String toSave() {
 		String next = "";
 		String prev = "";
-		for (Node node : this.next) {
-			next = next+", "+node.toString();
+		if (this.next!=null) {
+			for (Node node : this.next) {
+				next = next+", "+node.toString();
+			}
 		}
-		for (Node node : this.prev) {
-			prev = prev+", "+node.toString();
+		if (this.prev!=null) {
+			for (Node node : this.prev) {
+				prev = prev+", "+node.toString();
+			}
 		}
 		return "{"+this.type+"("+this.x+","+this.y+")"+icons[size]+";NEXT["+next+"];PREV["+prev+"]}";
 		// {INTERSECTION(500,500)+;NEXT[INTERSECTION(200,200)-,CURVE(100,100)]-;PREV[INTERSECTION(300,300)+,INTERSECTION(400,400)+]}
