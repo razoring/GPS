@@ -50,6 +50,12 @@ public class AssistedMapper extends GPSBase {
 					cursorSize = !cursorSize;
 				} 
 			}
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_SHIFT) {
+					selectedNode1 = null;
+					selectedNode2 = null;
+				}
+			}
 		});
 		setFocusable(true); 
 		requestFocusInWindow();

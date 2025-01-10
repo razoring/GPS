@@ -1,7 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class AutoMapper extends GPSBase {
@@ -13,24 +16,7 @@ public class AutoMapper extends GPSBase {
 
 	public AutoMapper(String imagePath) {
 		super(imagePath);
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int x = e.getX();
-				int y = e.getY();
-			}
-		});
-		
-		addKeyListener(new KeyAdapter() {
-			@Override 
-			public void keyPressed(KeyEvent e) { 
-				if (e.getKeyCode() == KeyEvent.VK_CONTROL) { 
-					cursorSize = !cursorSize;
-				} 
-			}
-		});
-		setFocusable(true); 
-		requestFocusInWindow();
+		findIntersection(imagePath);
 	}
 
 	File save = new File("src//map.txt");
@@ -78,12 +64,30 @@ public class AutoMapper extends GPSBase {
 		}
 	}
 	
-	public static Node findIntersection(String imagePath) {
-		
+	public Node findIntersection(String imagePath) {
+		try {
+			BufferedImage img = ImageIO.read(new File(imagePath));
+			for (int y = 0; y < img.getHeight(); y++) {
+				for (int x = 0; x < img.getWidth(); x++) {
+					x++;
+					int pixel = img.getRGB(x,y);
+					Color rgb = new Color(pixel, true);
+					int r = rgb.getRed();
+		            int g = rgb.getGreen();
+		            int b = rgb.getBlue();
+		            if (r==255 && g==255 && b==255) {
+		            	img.setRGB(x, y, new Color(0,255,0).getRGB());
+		            }
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
-	public static void calculateNodes() {
+	public void calculateNodes() {
 		
 	}
 
