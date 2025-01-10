@@ -7,6 +7,7 @@ import javax.swing.*;
 public class AssistedMapper extends GPSBase {
 	static String mode = "ADD";
 	static boolean cursorSize = true;
+	static boolean useCursor = true; // for os issues
 
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static AssistedMapper panel = new AssistedMapper("src/8.PNG");
@@ -188,9 +189,12 @@ public class AssistedMapper extends GPSBase {
 		Cursor bCursor = toolkit.createCustomCursor(big , new Point(frame.getX(), frame.getY()), "cursor");
 		Cursor sCursor = toolkit.createCustomCursor(small , new Point(frame.getX(), frame.getY()), "cursor");
 		while (true) {
-			
-			Cursor cursors[] = {sCursor,bCursor}; 
-			frame.setCursor(cursors[cursorSize?1:0]);
+			if (useCursor) {
+				Cursor cursors[] = {sCursor,bCursor}; 
+				frame.setCursor(cursors[cursorSize?1:0]);
+			} else {
+				break;
+			}
 		}
 		/*
 		Scanner input = new Scanner(System.in);

@@ -89,30 +89,39 @@ abstract class GPSBase extends JPanel {
 	// file handling
 	File save = new File("src/map.txt");
 	public void clearDuplicates() {
-        HashSet<String> uniqueLines = new HashSet<>();
-        ArrayList<String> lines = new ArrayList<>();
+        try {
+			if (save.createNewFile()) {
+			    System.out.println("File created: " + save.getName());
+			}
+			
+	        HashSet<String> uniqueLines = new HashSet<>();
+	        ArrayList<String> lines = new ArrayList<>();
 
-        // Read the file
-        try (BufferedReader reader = new BufferedReader(new FileReader(save))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (uniqueLines.add(line.trim())) {
-                    lines.add(line);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	        // Read the file
+	        try (BufferedReader reader = new BufferedReader(new FileReader(save))) {
+	            String line;
+	            while ((line = reader.readLine()) != null) {
+	                if (uniqueLines.add(line.trim())) {
+	                    lines.add(line);
+	                }
+	            }
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
 
-        // Write the unique lines back to the file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(save))) {
-            for (String line : lines) {
-                writer.write(line);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+	        // Write the unique lines back to the file
+	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(save))) {
+	            for (String line : lines) {
+	                writer.write(line);
+	                writer.newLine();
+	            }
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 	
 	public void readFromFile() {
