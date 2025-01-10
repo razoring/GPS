@@ -193,6 +193,7 @@ public class AssistedMapper extends GPSBase {
 				Cursor cursors[] = {sCursor,bCursor}; 
 				frame.setCursor(cursors[cursorSize?1:0]);
 			} else {
+				frame.setCursor(Cursor.CROSSHAIR_CURSOR);
 				break;
 			}
 		}
