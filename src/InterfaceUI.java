@@ -14,7 +14,8 @@ public class InterfaceUI extends JFrame {
         setLayout(inter);
 
         add(selectUI(), BorderLayout.EAST);
-        add(GPSApp.panel, BorderLayout.CENTER);
+        //add(GPSApp.panel, BorderLayout.CENTER);
+        add(AssistedMapper.panel, BorderLayout.CENTER);
         add(infoUI(), BorderLayout.SOUTH);
 
     }
@@ -94,5 +95,11 @@ public class InterfaceUI extends JFrame {
         InterfaceUI app = new InterfaceUI();
 		app.setSize(1200, 600); // set frame size
 		app.setVisible(true); // display frame
+
+        app.setCursor(Cursor.CROSSHAIR_CURSOR);
+        
+        while(true) {
+            app.repaint();
+        }
     }
 }
