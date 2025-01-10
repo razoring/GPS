@@ -69,15 +69,21 @@ public class GPSApp extends GPSBase {
 		for (Node node : nodes) {
 			for (Integer value : node.congestion) {
 				if (node.type.equals("CURVE")) {
-					/*
 					int total = 0;
-					for ( Integer prev : node.next.) {
-						total = total+prev;
-						for ( Integer next : node.congestion) {
-							total = total+next;
+					int count = 0;
+					for (Node next : node.next) {
+						for (Integer first : next.congestion) {
+							total = total+first;
+							count++;
+							for (Node prev : node.prev) {
+								for (Integer second : prev.congestion) {
+									total = total+second;
+									count++;
+								}
+							}
 						}
-					}*/
-					g.setColor(lvl[0]);
+					}
+					g.setColor(lvl[(int)(Math.round(total/count))]);
 				} else {
 					g.setColor(lvl[value]);
 				}
