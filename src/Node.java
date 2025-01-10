@@ -1,16 +1,18 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
 public class Node {
 	int x;
 	int y;
-	int congestion; // traffic values
-	int unweighted; // distance relative to other nodes
-	int weight; // relative to destination (accounts for distance + congestion)
 	int size;
+	int weighted;
+	ArrayList<Integer> congestion; // traffic values
+	ArrayList<Integer> unweighted; // distance relative to other nodes, unweighted
+	ArrayList<Integer> weights; // distance from start to end
+	ArrayList<Node> next;
+	ArrayList<Node> prev;
 	String type;
-	Node next[];
-	Node prev[];
 	String icons[] = {"-","+"};
 
 	private static int clamp(int val, int min, int max) {
@@ -24,28 +26,29 @@ public class Node {
 	public Node(int xx, int yy, String t, int s) {
 		x = xx;
 		y = yy;
-		congestion = 1;
-		unweighted = 0;
-		weight = 0;
+		congestion = new ArrayList<Integer>();
+		unweighted = new ArrayList<Integer>();
+		weights = new ArrayList<Integer>();
+		weighted = 0;
+		next = new ArrayList<Node>();
+		prev = new ArrayList<Node>();
 		size = s;
 		type = t;
-		next = new Node[0];
-		prev = new Node[0];
 	}
 	
 	public void setTraffic() {
-		this.congestion = clamp(this.congestion+random(),0,2);
+		for (int i = 0; i < congestion.size(); i++) {
+	        int updatedValue = clamp(congestion.get(i)+random(),0,2);
+	        congestion.set(i, updatedValue);
+	    }
 	}
 	
 	public void add(Node node, String type) {
+		this.congestion.add(1);
 		if (type.equals("prev")) {
-			System.out.println(this);
-			this.prev = Arrays.copyOf(this.prev, this.prev.length+1);
-			this.prev[this.prev.length-1] = node;
+			this.prev.add(node);
 		} else if (type.equals("next")) {
-			System.out.println(this);
-			this.next = Arrays.copyOf(this.next, this.next.length+1);
-			this.next[this.next.length-1] = node;
+			this.next.add(node);
 		}
 	}
 	

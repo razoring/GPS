@@ -13,6 +13,27 @@ public class GPSApp extends GPSBase {
 	public GPSApp(String imagePath) {
         super(imagePath);
         generateTraffic();
+        /*
+        // set distances
+        for (Node node : nodes) {
+        	print(node.toString());
+        	if (node.next != null) {
+            	for (Node next : node.next) {
+            		int distance = (int)(findDistance(node,next));
+            		node.uwNext.add(distance);
+            	}
+        	}
+
+        	if (node.prev != null) {
+            	for (Node next : node.prev) {
+            		int distance = (int)(findDistance(node,next));
+            		node.uwPrev.add(distance);
+            	}
+        	}
+        	
+        	print(Arrays.deepToString(node.uwNext.toArray()));
+        	print(Arrays.deepToString(node.uwPrev.toArray()));
+        }*/
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -30,9 +51,11 @@ public class GPSApp extends GPSBase {
                 } else {
                 	print("2");
                     selectedNode2 = findNearestNode(x,y,50);
+                    print(algorithm("Primitive",selectedNode1,selectedNode2,new ArrayList<Node>(),new Stack<Node>()));
+                    selectedNode1 = null;
+                    selectedNode2 = null;
                 }
                 
-                algorithm("DFS",selectedNode1,selectedNode2,new ArrayList<Node>(),new ArrayList<Node>());
             }
         });
     }
@@ -44,7 +67,22 @@ public class GPSApp extends GPSBase {
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 		
 		for (Node node : nodes) {
-			g.setColor(lvl[node.congestion]);
+			for (Integer value : node.congestion) {
+				if (node.type.equals("CURVE")) {
+					/*
+					int total = 0;
+					for ( Integer prev : node.next.) {
+						total = total+prev;
+						for ( Integer next : node.congestion) {
+							total = total+next;
+						}
+					}*/
+					g.setColor(lvl[0]);
+				} else {
+					g.setColor(lvl[value]);
+				}
+			}
+			
 			if (node.next != null) {
 			    g2d.setStroke(new BasicStroke(5));
 				for (Node next : node.next) {
@@ -61,9 +99,11 @@ public class GPSApp extends GPSBase {
 					g2d.setFont(text);
 					for (Node next : node.next) {
 						// find the distance divided by 3.78 (conversion of 1 px to 1 km) then amplify by 2 and add the univsersal base speed of 10
-						g2d.drawString(((int)(findDistance(node,next)/3.78)*2+20)+"km/h", node.x+5, node.y-5);
+						g2d.drawString((int)(Math.pow((findDistance(node,next)/3.78), 2)+10)+"km/h", node.x, node.y-5);
 					}
-					//g2d.drawString(node.toString(), node.x+10, node.y-10);
+					//g2d.drawString(node.toString(), node.x, node.y-15);
+					
+					g2d.drawString(String.valueOf(node.weighted), node.x, node.y-15);
 				}
 				if (node.size==1) {
 					g.fillOval(node.x - 5, node.y - 5, 10, 10);
@@ -111,20 +151,12 @@ public class GPSApp extends GPSBase {
 		repaint(); // recursive loop, fix to calling non-static methods in STATIC main while loop
 	}
 	
-	public void algorithm(String type, Node current, Node end, ArrayList visited, ArrayList stack) {
+	public Object algorithm(String type, Node current, Node end, ArrayList<Node> visited, Stack<Node> stack) {
 		if (type.equals("Primitive")) { // first type of algorithm
-			if (current != end) {
-				int x = current.x;
-				int y = current.y;
-				int radius = 0;
-				while (findNearestNode(x,y,radius)==null) {
-					print(radius);
-					radius++;
-				}
-				print(findNearestNode(x,y,radius));
-			}
-		} else if (type.equals("DFS")) {
 			
+		} else if (type.equals("DFS")) {
+		} else if (type.equals("A-Star")) {
 		}
+		return null;
 	}
 }

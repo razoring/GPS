@@ -70,16 +70,16 @@ public class AssistedMapper extends GPSBase {
 			}
 		} else if (mode.equals("DELETE")) {
 			if (node != null) {
-			    boolean isEmptyPrev = (node.prev == null || node.prev.length == 0);
-			    boolean isEmptyNext = (node.next == null || node.next.length == 0);
+			    boolean isEmptyPrev = (node.prev == null || node.prev.size() == 0);
+			    boolean isEmptyNext = (node.next == null || node.next.size() == 0);
 			    
 			    if (isEmptyPrev && isEmptyNext) {
 			        nodes.remove(node);
 			        intersections.remove(node);
 			        curves.remove(node);
 			    } else {
-			        node.prev = new Node[0];
-			        node.next = new Node[0];
+			        node.prev = new ArrayList<Node>();
+			        node.next = new ArrayList<Node>();
 			    }
 			}
 		} else if (mode.equals("LINK")) {
