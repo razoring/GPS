@@ -160,6 +160,10 @@ abstract class GPSBase extends JPanel {
 	    }
 	}
 	
+	public Node findPrev(Node base) {
+		return null;
+	}
+	
 	abstract void draw(Graphics g);
 	
 	// print functions to act like python
