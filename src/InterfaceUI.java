@@ -5,8 +5,6 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
-import javax.swing.event.MouseInputListener;
-
 import java.util.Arrays;
 
 public class InterfaceUI extends JFrame {
@@ -19,46 +17,16 @@ public class InterfaceUI extends JFrame {
     public JButton routeCalculate;
     public JCheckBox speed;
     public JCheckBox traffic;
-    public JLabel mouseCoordinate;
-    public JButton forceUpdate;
-    public JButton start;
-    public JButton destination;
-    public JButton routeCalculate;
-    public JCheckBox speed;
-    public JCheckBox traffic;
 
     public InterfaceUI() {
         super("GPS Interface");
         setLayout(inter);
         JPanel mapPanel = GPSApp.panel;
-        JPanel mapPanel = GPSApp.panel;
 
         add(selectUI(), BorderLayout.EAST);
         add(mapPanel, BorderLayout.CENTER);
         //add(AssistedMapper.panel, BorderLayout.CENTER);
-        add(mapPanel, BorderLayout.CENTER);
-        //add(AssistedMapper.panel, BorderLayout.CENTER);
         add(infoUI(), BorderLayout.SOUTH);
-
-        //ActionListeners
-        MouseHandler mouse = new MouseHandler();
-        ActionListener buttonListener = new ButtonEventListener();
-        ItemListener checkListener = new CheckBoxEventListener();
-
-        //mapPanel
-        mapPanel.addMouseListener(mouse);
-        mapPanel.addMouseMotionListener(mouse);
-
-        //selectUI
-        traffic.addItemListener(checkListener);
-        speed.addItemListener(checkListener);
-
-        start.addActionListener(buttonListener);
-        destination.addActionListener(buttonListener);
-        routeCalculate.addActionListener(buttonListener);
-
-        //infoUI
-        forceUpdate.addActionListener(buttonListener);
 
         //ActionListeners
         MouseHandler mouse = new MouseHandler();
@@ -93,11 +61,7 @@ public class InterfaceUI extends JFrame {
         start = new JButton("[Starting Point]");
         destination = new JButton("[Destination]");
         routeCalculate = new JButton("[Calculate Routes]");
-        start = new JButton("[Starting Point]");
-        destination = new JButton("[Destination]");
-        routeCalculate = new JButton("[Calculate Routes]");
 
-        topPanel.add(new JLabel("<< Coordinate Selection >>", SwingConstants.CENTER));
         topPanel.add(new JLabel("<< Coordinate Selection >>", SwingConstants.CENTER));
         topPanel.add(start);
         topPanel.add(destination);
@@ -107,11 +71,9 @@ public class InterfaceUI extends JFrame {
         JPanel bottomPanel = new JPanel(new GridLayout(5, 1, 10, 5));
 
        // JButton quickest = new JButton("[Fastest Route]");
-       // JButton quickest = new JButton("[Fastest Route]");
 
         //Traffic Box
         JPanel trafficCheck = new JPanel(new FlowLayout());
-        traffic = new JCheckBox();
         traffic = new JCheckBox();
         JLabel trafficCheckLabel = new JLabel("Consider Traffic");
         trafficCheck.add(trafficCheckLabel);
@@ -120,13 +82,10 @@ public class InterfaceUI extends JFrame {
         //Speed Box
         JPanel speedCheck = new JPanel(new FlowLayout());
         speed = new JCheckBox();
-        speed = new JCheckBox();
         JLabel speedCheckLabel = new JLabel("Consider Speed Limit");
         speedCheck.add(speedCheckLabel);
         speedCheck.add(speed);
 
-        bottomPanel.add(new JLabel("<< Route Options >>", SwingConstants.CENTER));
-       // bottomPanel.add(quickest);
         bottomPanel.add(new JLabel("<< Route Options >>", SwingConstants.CENTER));
        // bottomPanel.add(quickest);
         bottomPanel.add(trafficCheck);
@@ -138,7 +97,6 @@ public class InterfaceUI extends JFrame {
 
         ui.add(group, BorderLayout.CENTER);
 
-
         return ui; 
     } 
 
@@ -149,11 +107,9 @@ public class InterfaceUI extends JFrame {
 
         //JList<String> aiMapTest = new JList<>();
         mouseCoordinate = new JLabel("[Mouse Coordinate]");
-        mouseCoordinate = new JLabel("[Mouse Coordinate]");
         mCoord.add(mouseCoordinate);
 
         JLabel trafficTimer = new JLabel("[Reset Timer]");
-        forceUpdate = new JButton("[Force Update]");
         forceUpdate = new JButton("[Force Update]");
         traffic.add(trafficTimer);
         traffic.add(forceUpdate);
