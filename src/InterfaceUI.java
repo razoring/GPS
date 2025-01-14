@@ -198,6 +198,7 @@ public class InterfaceUI extends JFrame {
 		public void actionPerformed( ActionEvent event ) {
 			if (event.getSource() == start) {
                 System.out.println("Toggle Starting Coordinate Selection");
+                //start.setText(GPSApp.selectedNode1.toString());
             } else if (event.getSource() == destination) {
                 System.out.println("Toggle Destination Coordinate Selection");
             } else if (event.getSource() == routeCalculate) {
