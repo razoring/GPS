@@ -10,6 +10,7 @@ import java.util.Arrays;
 public class InterfaceUI extends JFrame {
 
     private BorderLayout inter = new BorderLayout();
+    private static InterfaceUI app = new InterfaceUI();
     public JLabel mouseCoordinate;
     public JButton forceUpdate;
     public JButton start;
@@ -24,8 +25,8 @@ public class InterfaceUI extends JFrame {
         JPanel mapPanel = GPSApp.panel;
 
         add(selectUI(), BorderLayout.EAST);
-        add(mapPanel, BorderLayout.CENTER);
-        //add(AssistedMapper.panel, BorderLayout.CENTER);
+        //add(mapPanel, BorderLayout.CENTER);
+        add(AssistedMapper.panel, BorderLayout.CENTER);
         add(infoUI(), BorderLayout.SOUTH);
 
         //ActionListeners
@@ -48,6 +49,7 @@ public class InterfaceUI extends JFrame {
         //infoUI
         forceUpdate.addActionListener(buttonListener);
 
+        
     }
 
     private JPanel selectUI() {
@@ -121,11 +123,14 @@ public class InterfaceUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        InterfaceUI app = new InterfaceUI();
 		app.setSize(1200, 600); // set frame size
 		app.setVisible(true); // display frame
 
         app.setCursor(Cursor.CROSSHAIR_CURSOR);
+
+        while(true) {
+            app.repaint();
+        }
         
     }
 
@@ -205,6 +210,7 @@ public class InterfaceUI extends JFrame {
                 System.out.println("Route Calculations");
             } else if (event.getSource() == forceUpdate) {
                 System.out.println("Force Update mapPanel");
+                app.repaint();
             }
 
 		} // end method actionPerformed	
