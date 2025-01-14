@@ -28,10 +28,6 @@ abstract class GPSBase extends JPanel {
 		return null;
 	}
 	
-	public double findDistance(Node base, Node target) {
-		return Math.sqrt(Math.abs(target.x-base.x)+Math.abs(target.y-base.y)); // pythagorean theorem
-	}
-	
 	private Node getNode(String item, Node parent, String position) {
 	    String[] parts = item.split("\\(");
 	    if (parts.length < 2) {
@@ -158,10 +154,6 @@ abstract class GPSBase extends JPanel {
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
-	}
-	
-	public Node findPrev(Node base) {
-		return null;
 	}
 	
 	abstract void draw(Graphics g);

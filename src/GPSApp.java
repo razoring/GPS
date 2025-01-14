@@ -51,7 +51,7 @@ public class GPSApp extends GPSBase {
                 } else {
                 	print("2");
                     selectedNode2 = findNearestNode(x,y,50);
-                    print(algorithm("Primitive",selectedNode1,selectedNode2,new ArrayList<Node>(),new Stack<Node>()));
+                    print(algorithm("Dijkstra",selectedNode1,selectedNode1,selectedNode2,new ArrayList<Node>()));
                     selectedNode1 = null;
                     selectedNode2 = null;
                 }
@@ -69,14 +69,14 @@ public class GPSApp extends GPSBase {
 		for (Node node : nodes) {
 			for (Integer value : node.congestion) {
 				if (node.type.equals("CURVE")) {
-					print(value);
+					//print(value);
 				}
 				g.setColor(lvl[value]);
 			}
 			
-			if (node.next != null) {
+			if (node.connections != null) {
 			    g2d.setStroke(new BasicStroke(5));
-				for (Node next : node.next) {
+				for (Node next : node.connections) {
 					g.drawLine(node.x, node.y, next.x, next.y);
 				}
 			}
@@ -85,12 +85,12 @@ public class GPSApp extends GPSBase {
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
 				g.setColor(Color.black);
-				if (node.next!=null) {
+				if (node.connections!=null) {
 					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
 					g2d.setFont(text);
-					for (Node next : node.next) {
+					for (Node next : node.connections) {
 						// find the distance divided by 3.78 (conversion of 1 px to 1 km) then amplify by 2 and add the univsersal base speed of 10
-						g2d.drawString((int)(Math.pow((findDistance(node,next)/3.78), 2)+10)+"km/h", node.x, node.y-5);
+						g2d.drawString((int)(Math.pow((node.findDistance(next)/3.78), 2)+10)+"km/h", node.x, node.y-5);
 					}
 					//g2d.drawString(node.toString(), node.x, node.y-15);
 					
@@ -126,7 +126,7 @@ public class GPSApp extends GPSBase {
 		try {
 			if (elapsed>=1200/1200) { // 2 minute timer
 				elapsed = 0;
-				print("Refreshed");
+				//print("Refreshed");
 				generateTraffic();
 			}
 			
@@ -142,11 +142,16 @@ public class GPSApp extends GPSBase {
 		repaint(); // recursive loop, fix to calling non-static methods in STATIC main while loop
 	}
 	
-	public Object algorithm(String type, Node current, Node end, ArrayList<Node> visited, Stack<Node> stack) {
+	public Object algorithm(String type, Node start, Node current, Node end, ArrayList<Node> visited) {
 		if (type.equals("Primitive")) { // first type of algorithm
-			
 		} else if (type.equals("DFS")) {
-		} else if (type.equals("A-Star")) {
+		} else if (type.equals("A*")) {
+		} else if (type.equals("Dijkstra")) {
+			for (Node next : current.connections) {
+				if (next.distance) {
+					
+				}
+			}
 		}
 		return null;
 	}

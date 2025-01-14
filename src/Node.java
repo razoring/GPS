@@ -8,8 +8,9 @@ public class Node {
 	int size;
 	int weighted;
 	ArrayList<Integer> congestion; // traffic values
-	ArrayList<Integer> unweighted; // distance relative to other nodes, unweighted
+	ArrayList<Double> distance; // distance relative to other nodes, unweighted
 	ArrayList<Integer> weights; // distance from start to end
+	ArrayList<Node> connections;
 	ArrayList<Node> next;
 	ArrayList<Node> prev;
 	String type;
@@ -26,8 +27,9 @@ public class Node {
 	public Node(int xx, int yy, String t, int s) {
 		x = xx;
 		y = yy;
+		connections = new ArrayList<Node>();
 		congestion = new ArrayList<Integer>();
-		unweighted = new ArrayList<Integer>();
+		distance = new ArrayList<Double>();
 		weights = new ArrayList<Integer>();
 		weighted = 0;
 		next = new ArrayList<Node>();
@@ -43,8 +45,14 @@ public class Node {
 	    }
 	}
 	
+	public double findDistance(Node target) {
+		return Math.sqrt(Math.abs(target.x-this.x)+Math.abs(target.y-this.y)); // pythagorean theorem
+	}
+	
 	public void add(Node node, String type) {
 		this.congestion.add(1);
+		this.connections.add(node);
+		this.distance.add(findDistance(node));
 		if (type.equals("prev")) {
 			this.prev.add(node);
 		} else if (type.equals("next")) {
