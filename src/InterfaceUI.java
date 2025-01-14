@@ -19,14 +19,17 @@ public class InterfaceUI extends JFrame {
     public JCheckBox speed;
     public JCheckBox traffic;
 
+    /**
+     * Constructor, handles final display layout, and contains ActionListeners for all interactive elements
+     */
     public InterfaceUI() {
         super("GPS Interface");
         setLayout(inter);
         JPanel mapPanel = GPSApp.panel;
 
         add(selectUI(), BorderLayout.EAST);
-        //add(mapPanel, BorderLayout.CENTER);
-        add(AssistedMapper.panel, BorderLayout.CENTER);
+        add(mapPanel, BorderLayout.CENTER);
+        //add(AssistedMapper.panel, BorderLayout.CENTER);
         add(infoUI(), BorderLayout.SOUTH);
 
         //ActionListeners
@@ -51,7 +54,10 @@ public class InterfaceUI extends JFrame {
 
         
     }
-
+    /**
+     * Handles layout for the right side of the display UI (interaction)
+     * @return ui: Final panel containing all selectUI elements
+     */
     private JPanel selectUI() {
         JPanel ui = new JPanel(new BorderLayout());
         JPanel group = new JPanel(new GridLayout(2, 1));
@@ -102,6 +108,10 @@ public class InterfaceUI extends JFrame {
         return ui; 
     } 
 
+    /**
+     * Handles layout for the bottom of the display UI (information, e.g. mouse coordinate and reset timer)
+     * @return info: Final panel containing all infoUI elements
+     */
     private JPanel infoUI() {
         JPanel info = new JPanel(new BorderLayout());
         JPanel mCoord = new JPanel(new FlowLayout());
@@ -135,6 +145,9 @@ public class InterfaceUI extends JFrame {
     }
 
 //Action Handler Classes
+    /**
+     * Inner class for mouse actions.
+     */
     private class MouseHandler implements MouseInputListener {
 		// MouseListener event handlers
 		// handle event when mouse released immediately after the press
@@ -176,6 +189,9 @@ public class InterfaceUI extends JFrame {
 		
 	} // end inner class MouseHandler
 
+    /**
+     * Inner class for JCheckBox selection/deselection
+     */
     private class CheckBoxEventListener implements ItemListener {
 		@Override
 		public void itemStateChanged( ItemEvent event ) {
@@ -198,6 +214,9 @@ public class InterfaceUI extends JFrame {
 		}
 	}
 
+    /**
+     * Inner class for JButton actions
+     */
     private class ButtonEventListener implements ActionListener {
         @Override
 		public void actionPerformed( ActionEvent event ) {
