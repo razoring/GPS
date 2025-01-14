@@ -74,9 +74,9 @@ public class GPSApp extends GPSBase {
 				g.setColor(lvl[value]);
 			}
 			
-			if (node.next != null) {
+			if (node.connections != null) {
 			    g2d.setStroke(new BasicStroke(5));
-				for (Node next : node.next) {
+				for (Node next : node.connections) {
 					g.drawLine(node.x, node.y, next.x, next.y);
 				}
 			}
@@ -85,10 +85,10 @@ public class GPSApp extends GPSBase {
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
 				g.setColor(Color.black);
-				if (node.next!=null) {
+				if (node.connections!=null) {
 					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
 					g2d.setFont(text);
-					for (Node next : node.next) {
+					for (Node next : node.connections) {
 						// find the distance divided by 3.78 (conversion of 1 px to 1 km) then amplify by 2 and add the univsersal base speed of 10
 						g2d.drawString((int)(Math.pow((node.findDistance(next)/3.78), 2)+10)+"km/h", node.x, node.y-5);
 					}
