@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashSet;
+
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
@@ -222,6 +224,9 @@ public class InterfaceUI extends JFrame {
                 System.out.println("Route Calculations");
                 System.out.println("Starting Location: " + GPSApp.selectedNode1);
                 System.out.println("Ending Location: " + GPSApp.selectedNode2);
+                GPSApp.algorithm("Distance",GPSApp.selectedNode1,GPSApp.selectedNode1,GPSApp.selectedNode2,new HashSet<Node>(),new HashSet<Node>());
+                GPSApp.selectedNode1 = null;
+                GPSApp.selectedNode2 = null;
             } else if (event.getSource() == forceUpdate && nodeSelection == 0) { //Forcefully updates the UI
                 System.out.println("Force Update mapPanel");
                 GPSApp.elapsed=1200;

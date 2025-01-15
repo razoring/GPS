@@ -60,10 +60,6 @@ public class GPSApp extends GPSBase {
 						selectedNode2 = findNearestNode(x,y,10);
 						InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
 						//Temporarily commented out. Set selectedNode1 and selectedNode2 to null AFTER algo runs
-
-						print(algorithm("Distance",selectedNode1,selectedNode1,selectedNode2,new HashSet<Node>(),new HashSet<Node>()));
-						selectedNode1 = null;
-						selectedNode2 = null;
 					}
 
 					InterfaceUI.nodeSelection = 0;
@@ -175,32 +171,42 @@ public class GPSApp extends GPSBase {
 		repaint(); // recursive loop, fix to calling non-static methods in STATIC main while loop
 	}
 	
-	public Object algorithm(String type, Node start, Node current, Node end, HashSet<Node> path, HashSet<Node> visited) {
-	    if (type.equals("Primitive")) {
-	    } else if (type.equals("DFS")) {
-	    } else if (type.equals("A*")) {
-	    } else if (type.equals("Distance")) {
+	public void drawDebug(Graphics g, Node node) {
+		g.setColor(Color.red);
+		g.fillOval(node.x - 5, node.y - 5, 10, 10);
+	}
+	
+	static public Object algorithm(String type, Node start, Node current, Node end, HashSet<Node> path, HashSet<Node> visited) {
+	    if (type.equals("Distance")) {
     		if (current != null) {
 	    		Node closest = null;
 	    		double closestToCurr = Double.MAX_VALUE;
 	    		double closestToEnd = Double.MAX_VALUE;
 
 	    		for (Node connection : current.connections) {
-	    		    if (connection == end) {
-	    		        closest = end;
-	    		        break;
-	    		    }
+	    			if (!visited.contains(connection)) {
+		    			print(connection+"fs");
+		    		    if (connection == end) {
+		    		        closest = end;
+		    		        break;
+		    		    }
 
-	    		    double toCurr = connection.findDistance(current);
-	    		    double toEnd = connection.findDistance(end);
+		    		    double toCurr = connection.findDistance(current);
+		    		    double toEnd = connection.findDistance(end);
 
-	    		    if (toCurr < closestToCurr && toEnd < closestToEnd) {
-	    		        closest = connection;
-	    		        closestToCurr = toCurr;
-	    		        closestToEnd = toEnd;
-	    		    }
+		    		    if (toCurr < closestToCurr && toEnd < closestToEnd) {
+		    		        closest = connection;
+		    		        closestToCurr = toCurr;
+		    		        closestToEnd = toEnd;
+		    		        try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+		    		    }
+	    			}
 	    		}
-    		    print(closest);
     		    current = closest;
 	    		path.add(current);
 	    		visited.add(current);
@@ -210,7 +216,7 @@ public class GPSApp extends GPSBase {
     		    	for (Node node : path) {
     		    		node.marker = true;
     		    	}
-    		        print(Arrays.deepToString(path.toArray()));
+    		        return Arrays.deepToString(path.toArray());
     		    }
 	    	}
 	    }
