@@ -11,13 +11,15 @@ public class InterfaceUI extends JFrame {
 
     private BorderLayout inter = new BorderLayout();
     private static InterfaceUI app = new InterfaceUI();
-    public JLabel mouseCoordinate;
-    public JButton forceUpdate;
-    public JButton start;
-    public JButton destination;
+    private JLabel mouseCoordinate;
+    private static JLabel trafficTimer;
+    private JButton forceUpdate;
+    public static JButton start;
+    public static JButton destination;
     public JButton routeCalculate;
-    public JCheckBox speed;
-    public JCheckBox traffic;
+    private JCheckBox speed;
+    private JCheckBox traffic;
+    public static int nodeSelection = 0;
 
     /**
      * Constructor, handles final display layout, and contains ActionListeners for all interactive elements
@@ -121,7 +123,7 @@ public class InterfaceUI extends JFrame {
         mouseCoordinate = new JLabel("[Mouse Coordinate]");
         mCoord.add(mouseCoordinate);
 
-        JLabel trafficTimer = new JLabel("[Reset Timer]");
+        trafficTimer = new JLabel("[Reset Timer]");
         forceUpdate = new JButton("[Force Update]");
         traffic.add(trafficTimer);
         traffic.add(forceUpdate);
@@ -135,11 +137,11 @@ public class InterfaceUI extends JFrame {
     public static void main(String[] args) {
 		app.setSize(1200, 600); // set frame size
 		app.setVisible(true); // display frame
-
         app.setCursor(Cursor.CROSSHAIR_CURSOR);
 
         while(true) {
-            app.repaint();
+            trafficTimer.setText("Traffic update in: " + (120 - (GPSApp.elapsed)/10));
+            //app.repaint();
         }
         
     }
@@ -220,14 +222,19 @@ public class InterfaceUI extends JFrame {
     private class ButtonEventListener implements ActionListener {
         @Override
 		public void actionPerformed( ActionEvent event ) {
-			if (event.getSource() == start) {
+			if (event.getSource() == start && nodeSelection == 0) {
                 System.out.println("Toggle Starting Coordinate Selection");
-                //start.setText(GPSApp.selectedNode1.toString());
-            } else if (event.getSource() == destination) {
+                start.setText("Awaiting input..");
+                nodeSelection = 1;
+            } else if (event.getSource() == destination && nodeSelection == 0) {
                 System.out.println("Toggle Destination Coordinate Selection");
-            } else if (event.getSource() == routeCalculate) {
+                destination.setText("Awaiting input...");
+                nodeSelection = 2;
+            } else if (event.getSource() == routeCalculate && nodeSelection == 0) {
                 System.out.println("Route Calculations");
-            } else if (event.getSource() == forceUpdate) {
+                System.out.println("Starting Location: " + GPSApp.selectedNode1);
+                System.out.println("Ending Location: " + GPSApp.selectedNode2);
+            } else if (event.getSource() == forceUpdate && nodeSelection == 0) {
                 System.out.println("Force Update mapPanel");
                 app.repaint();
             }
