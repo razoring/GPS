@@ -1,12 +1,14 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.util.*;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 
-import java.util.Arrays;
-
+/**
+ * Jiawei Chen, Raymond So <p>
+ * 01/15/2025 <p>
+ * Handles all frontend UI for the user. Includes interactive elements for the GPS to allow the user to select
+ * starting position and destination, and allows for alternative routes based off checkbox selections.
+ */
 public class InterfaceUI extends JFrame {
 
     private BorderLayout inter = new BorderLayout();
@@ -29,9 +31,9 @@ public class InterfaceUI extends JFrame {
         setLayout(inter);
         JPanel mapPanel = GPSApp.panel;
 
-        add(selectUI(), BorderLayout.EAST);
-        add(mapPanel, BorderLayout.CENTER);
-        //add(AssistedMapper.panel, BorderLayout.CENTER);
+        add(selectUI(), BorderLayout.EAST); 
+        add(mapPanel, BorderLayout.CENTER); //Add map to main UI
+        //add(AssistedMapper.panel, BorderLayout.CENTER); //Toggleable for intersection mapping
         add(infoUI(), BorderLayout.SOUTH);
 
         //ActionListeners
@@ -39,11 +41,11 @@ public class InterfaceUI extends JFrame {
         ActionListener buttonListener = new ButtonEventListener();
         ItemListener checkListener = new CheckBoxEventListener();
 
-        //mapPanel
+        //mapPanel - For use in tracking mouse coordinates & handling clicks
         mapPanel.addMouseListener(mouse);
         mapPanel.addMouseMotionListener(mouse);
 
-        //selectUI
+        //selectUI - To handle traffic & speed limit considerations, and GPS main functions
         traffic.addItemListener(checkListener);
         speed.addItemListener(checkListener);
 
@@ -51,7 +53,7 @@ public class InterfaceUI extends JFrame {
         destination.addActionListener(buttonListener);
         routeCalculate.addActionListener(buttonListener);
 
-        //infoUI
+        //infoUI - Allows the user to force update the UI.
         forceUpdate.addActionListener(buttonListener);
 
         
@@ -61,7 +63,7 @@ public class InterfaceUI extends JFrame {
      * @return ui: Final panel containing all selectUI elements
      */
     private JPanel selectUI() {
-        JPanel ui = new JPanel(new BorderLayout());
+        JPanel ui = new JPanel(new BorderLayout()); //Main layout
         JPanel group = new JPanel(new GridLayout(2, 1));
         ui.add(new JPanel(), BorderLayout.WEST);
         ui.add(new JPanel(), BorderLayout.EAST);
@@ -82,14 +84,14 @@ public class InterfaceUI extends JFrame {
 
        // JButton quickest = new JButton("[Fastest Route]");
 
-        //Traffic Box
+        //Traffic Box - If the GPS should consider traffic levels
         JPanel trafficCheck = new JPanel(new FlowLayout());
         traffic = new JCheckBox();
         JLabel trafficCheckLabel = new JLabel("Consider Traffic");
         trafficCheck.add(trafficCheckLabel);
         trafficCheck.add(traffic);
 
-        //Speed Box
+        //Speed Box - If the GPS should consider speed limits
         JPanel speedCheck = new JPanel(new FlowLayout());
         speed = new JCheckBox();
         JLabel speedCheckLabel = new JLabel("Consider Speed Limit");
@@ -97,7 +99,6 @@ public class InterfaceUI extends JFrame {
         speedCheck.add(speed);
 
         bottomPanel.add(new JLabel("<< Route Options >>", SwingConstants.CENTER));
-       // bottomPanel.add(quickest);
         bottomPanel.add(trafficCheck);
         bottomPanel.add(speedCheck);
 
@@ -115,16 +116,16 @@ public class InterfaceUI extends JFrame {
      * @return info: Final panel containing all infoUI elements
      */
     private JPanel infoUI() {
-        JPanel info = new JPanel(new BorderLayout());
+        JPanel info = new JPanel(new BorderLayout()); //Main layout
         JPanel mCoord = new JPanel(new FlowLayout());
         JPanel traffic = new JPanel(new FlowLayout());
 
         //JList<String> aiMapTest = new JList<>();
-        mouseCoordinate = new JLabel("[Mouse Coordinate]");
+        mouseCoordinate = new JLabel("[Mouse Coordinate]"); //Constantly displays the cursor's coordinate on the map
         mCoord.add(mouseCoordinate);
 
-        trafficTimer = new JLabel("[Reset Timer]");
-        forceUpdate = new JButton("[Force Update]");
+        trafficTimer = new JLabel("[Reset Timer]"); //Countdown to next traffic level update
+        forceUpdate = new JButton("[Force Update]"); //Allows the user to forcefully update the UI
         traffic.add(trafficTimer);
         traffic.add(forceUpdate);
 
@@ -137,11 +138,11 @@ public class InterfaceUI extends JFrame {
     public static void main(String[] args) {
 		app.setSize(1200, 600); // set frame size
 		app.setVisible(true); // display frame
-        app.setCursor(Cursor.CROSSHAIR_CURSOR);
+        app.setCursor(Cursor.CROSSHAIR_CURSOR); 
 
-        while(true) {
+        while(true) { //To constantly update the traffic level update countdown
             trafficTimer.setText("Traffic update in: " + (120 - (GPSApp.elapsed)/10));
-            //app.repaint();
+            //app.repaint(); //For debugging purposes
         }
         
     }
@@ -150,39 +151,25 @@ public class InterfaceUI extends JFrame {
     /**
      * Inner class for mouse actions.
      */
-    private class MouseHandler implements MouseInputListener {
+    private class MouseHandler extends MouseAdapter {
 		// MouseListener event handlers
 		// handle event when mouse released immediately after the press
-		public void mouseClicked( MouseEvent event ){
-			mouseCoordinate.setText( String.format( "Clicked at [%d, %d]",event.getX(), event.getY() ) );
 
+		/*
+        public void mouseClicked( MouseEvent event ){
+			mouseCoordinate.setText( String.format( "Clicked at [%d, %d]",event.getX(), event.getY() ) );
 		} // end method mouseClicked
-		
+		*/
+
 		// handle event when mouse pressed
 		public void mousePressed( MouseEvent event ){
 			mouseCoordinate.setText( String.format( "Pressed at [%d, %d]",event.getX(), event.getY() ) );
 		} // end method mousePressed
 		
-		// handle event when mouse released after dragging
-		public void mouseReleased( MouseEvent event ){
-			
-		} // end method mouseReleased
-		
-		// handle event when the mouse enters an area
-		public void mouseEntered( MouseEvent event ){
-			
-		} // end method mouseEntered
-		
 		// handle event when mouse exits an area
 		public void mouseExited( MouseEvent event ){
 			mouseCoordinate.setText("[Mouse is not within map]");
 		} // end method mouseExited
-		// MouseMotionListener event handlers
-
-        	// handle event when a user drags mouse with the button pressed
-		public void mouseDragged( MouseEvent event ){
-			
-		} // end method mouseDragged
 		
 		// handle event when a user moves the mouse
 		public void mouseMoved( MouseEvent event ){
@@ -197,14 +184,14 @@ public class InterfaceUI extends JFrame {
     private class CheckBoxEventListener implements ItemListener {
 		@Override
 		public void itemStateChanged( ItemEvent event ) {
-            if (event.getSource() == traffic) {
+            if (event.getSource() == traffic) { //Traffic Level considerations
                 System.out.println("Traffic: ");
                 if (traffic.isSelected()) {
-                    System.out.print("Selected");
+                    System.out.print("Selected"); 
                 } else {
                     System.err.print("Unselected");
                 }
-            } else if (event.getSource() == speed) {
+            } else if (event.getSource() == speed) { //Speed Limit considerations
                 System.out.println("Speed: ");
                 if (speed.isSelected()) {
                     System.out.print("Selected");
@@ -217,24 +204,25 @@ public class InterfaceUI extends JFrame {
 	}
 
     /**
-     * Inner class for JButton actions
+     * Inner class for JButton actions.
      */
     private class ButtonEventListener implements ActionListener {
         @Override
 		public void actionPerformed( ActionEvent event ) {
-			if (event.getSource() == start && nodeSelection == 0) {
+			if (event.getSource() == start && nodeSelection == 0) { //Allows the user to select their starting position
+                //Will only run while node selection isnt active
                 System.out.println("Toggle Starting Coordinate Selection");
-                start.setText("Awaiting input..");
-                nodeSelection = 1;
-            } else if (event.getSource() == destination && nodeSelection == 0) {
+                start.setText("Awaiting input.."); //Prompt
+                nodeSelection = 1; //Set node selection type to 1 (start)
+            } else if (event.getSource() == destination && nodeSelection == 0) { //Allows the user to select their destination
                 System.out.println("Toggle Destination Coordinate Selection");
                 destination.setText("Awaiting input...");
-                nodeSelection = 2;
-            } else if (event.getSource() == routeCalculate && nodeSelection == 0) {
+                nodeSelection = 2; //Set node selection type to 2 (destination)
+            } else if (event.getSource() == routeCalculate && nodeSelection == 0) { //Calculates routes given considerations
                 System.out.println("Route Calculations");
                 System.out.println("Starting Location: " + GPSApp.selectedNode1);
                 System.out.println("Ending Location: " + GPSApp.selectedNode2);
-            } else if (event.getSource() == forceUpdate && nodeSelection == 0) {
+            } else if (event.getSource() == forceUpdate && nodeSelection == 0) { //Forcefully updates the UI
                 System.out.println("Force Update mapPanel");
                 app.repaint();
             }
