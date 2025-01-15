@@ -83,7 +83,7 @@ public class GPSApp extends GPSBase {
 		for (Node node : nodes) {
 			if (node.next != null) {
 			    g2d.setStroke(new BasicStroke(4));
-				for (Node next : node.connections) {
+				for (Node next : node.next) {
 					g.drawLine(node.x, node.y, next.x, next.y);
 					
 					if (node.size==1) {
