@@ -4,6 +4,12 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
+/**
+ * Raymond So, Jiawei Chen <p>
+ * 01/15/2025 <p>
+ * Handles most functions related to the map itself, such as road lines, traffic levels and node selection.
+ * Also contains route calculation function using Dijkstra's Algorithm.
+ */
 public class GPSApp extends GPSBase {
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
