@@ -21,7 +21,7 @@ public class InterfaceUI extends JFrame {
     public JButton routeCalculate;
     private JCheckBox speed;
     private JCheckBox traffic;
-    public static int nodeSelection = 0;
+    public static int nodeSelection = 0; //For buttons
 
     /**
      * Constructor, handles final display layout, and contains ActionListeners for all interactive elements
