@@ -3,8 +3,13 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
-import java.util.Arrays;
 
+/**
+ * Raymond So, Jiawei Chen <p>
+ * 01/15/2025 <p>
+ * Handles most functions related to the map itself, such as road lines, traffic levels and node selection.
+ * Also contains route calculation function using Dijkstra's Algorithm.
+ */
 public class GPSApp extends GPSBase {
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
@@ -40,26 +45,37 @@ public class GPSApp extends GPSBase {
             public void mouseClicked(MouseEvent e) {
                 int x = e.getX();
                 int y = e.getY();
-                
+                int nodeType = InterfaceUI.nodeSelection;
+
                 //print(findNearestNode(x,y,10));
                 //print(Arrays.deepToString(nodes.toArray()));
                 //print(findConnections(findNearestNode(x,y,50)).size());
+				if (nodeType > 0) {
+					if (selectedNode1 == null || nodeType == 1) {
+						print("1");
+						selectedNode1 = findNearestNode(x,y,50);
+						InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
+					} else if ((selectedNode1 != null && selectedNode2 == null) || nodeType == 2) {
+						print("2");
+						selectedNode2 = findNearestNode(x,y,50);
+						InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
+						/* Temporarily commented out. Set selectedNode1 and selectedNode2 to null AFTER algo runs
 
-                if (selectedNode1 == null) {
-                	print("1");
-                    selectedNode1 = findNearestNode(x,y,50);
-                } else {
-                	print("2");
-                    selectedNode2 = findNearestNode(x,y,50);
-                    print(algorithm("Dijkstra",selectedNode1,selectedNode1,selectedNode2,new ArrayList<Node>()));
-                    selectedNode1 = null;
-                    selectedNode2 = null;
-                }
+						print(algorithm("Dijkstra",selectedNode1,selectedNode1,selectedNode2,new ArrayList<Node>()));
+						selectedNode1 = null;
+						selectedNode2 = null;
+
+						*/
+					}
+
+					InterfaceUI.nodeSelection = 0;
+				}
                 
             }
         });
     }
 
+	
 	@Override
 	void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -124,7 +140,7 @@ public class GPSApp extends GPSBase {
 	@Override
 	public void paintComponent(Graphics g) { // TODO: DO NOT REFRESH EXTERNALLY
 		try {
-			if (elapsed>=1200/1200) { // 2 minute timer
+			if (elapsed>=1200) { // 2 minute timer
 				elapsed = 0;
 				//print("Refreshed");
 				generateTraffic();

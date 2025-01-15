@@ -2,6 +2,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Raymond So, Jiawei Chen <p>
+ * 01/15/2025 <p>
+ * Class for all functions related to individual nodes.
+ */
 public class Node {
 	int x;
 	int y;

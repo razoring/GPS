@@ -4,6 +4,11 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
+/**
+ * Raymond So, Jiawei Chen <p>
+ * 01/15/2025 <p>
+ * Abstract class containing map functions for GPSApp, persistent data and node selection.
+ */
 abstract class GPSBase extends JPanel {
 	public Image mapImage;
 	public static String mode = "ADD";
