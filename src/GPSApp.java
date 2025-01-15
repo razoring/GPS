@@ -13,7 +13,7 @@ import javax.swing.*;
 public class GPSApp extends GPSBase {
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
-	static int elapsed = 0;
+	public static int elapsed = 0;
 
 	public GPSApp(String imagePath) {
         super(imagePath);
@@ -53,19 +53,17 @@ public class GPSApp extends GPSBase {
 				if (nodeType > 0) {
 					if (selectedNode1 == null || nodeType == 1) {
 						print("1");
-						selectedNode1 = findNearestNode(x,y,50);
+						selectedNode1 = findNearestNode(x,y,10);
 						InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
 					} else if ((selectedNode1 != null && selectedNode2 == null) || nodeType == 2) {
 						print("2");
-						selectedNode2 = findNearestNode(x,y,50);
+						selectedNode2 = findNearestNode(x,y,10);
 						InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
-						/* Temporarily commented out. Set selectedNode1 and selectedNode2 to null AFTER algo runs
+						//Temporarily commented out. Set selectedNode1 and selectedNode2 to null AFTER algo runs
 
-						print(algorithm("Dijkstra",selectedNode1,selectedNode1,selectedNode2,new ArrayList<Node>()));
+						print(algorithm("Distance",selectedNode1,selectedNode1,selectedNode2,new HashSet<Node>(),new HashSet<Node>()));
 						selectedNode1 = null;
 						selectedNode2 = null;
-
-						*/
 					}
 
 					InterfaceUI.nodeSelection = 0;
@@ -83,16 +81,34 @@ public class GPSApp extends GPSBase {
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 		
 		for (Node node : nodes) {
+			if (node.next != null) {
+			    g2d.setStroke(new BasicStroke(4));
+				for (Node next : node.connections) {
+					g.drawLine(node.x, node.y, next.x, next.y);
+					
+					if (node.size==1) {
+						g.fillOval(node.x - 5, node.y - 5, 10, 10);
+					} else {
+						g.fillOval(node.x - 3, node.y - 3, 6, 6);
+					}
+				}
+			}
+			
+			/*
 			for (Integer value : node.congestion) {
 				if (node.type.equals("CURVE")) {
 					//print(value);
 				}
-				g.setColor(lvl[value]);
+				if (node.marker) {
+					g.setColor(Color.blue);
+				} else {
+					g.setColor(lvl[value]);
+				}
 			}
 			
-			if (node.connections != null) {
+			if (node.next != null) {
 			    g2d.setStroke(new BasicStroke(5));
-				for (Node next : node.connections) {
+				for (Node next : node.next) {
 					g.drawLine(node.x, node.y, next.x, next.y);
 				}
 			}
@@ -117,13 +133,14 @@ public class GPSApp extends GPSBase {
 				} else {
 					g.fillOval(node.x - 3, node.y - 3, 6, 6);
 				}
-			}
+			}*/
 		}
 	}
 	
 	public void generateTraffic() {
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
+	    		node.marker = false;
 				node.setTraffic();
 			}
 		}
@@ -158,19 +175,44 @@ public class GPSApp extends GPSBase {
 		repaint(); // recursive loop, fix to calling non-static methods in STATIC main while loop
 	}
 	
-	public Object algorithm(String type, Node start, Node current, Node end, ArrayList<Node> visited) {
+	public Object algorithm(String type, Node start, Node current, Node end, HashSet<Node> path, HashSet<Node> visited) {
 	    if (type.equals("Primitive")) {
 	    } else if (type.equals("DFS")) {
 	    } else if (type.equals("A*")) {
-	    } else if (type.equals("Dijkstra")) {
-	        for (Node node : intersections) {
-	        	double baseDistance = start.findDistance(end);
-	        	HashMap<Node,Double> connected = new HashMap<Node,Double>();
-	        	for (Node connection : node.connections) {
-	        		connected.put(connection, connection.findDistance(current));
-	        	}
-	        	print(connected);
-	        }
+	    } else if (type.equals("Distance")) {
+    		if (current != null) {
+	    		Node closest = null;
+	    		double closestToCurr = Double.MAX_VALUE;
+	    		double closestToEnd = Double.MAX_VALUE;
+
+	    		for (Node connection : current.connections) {
+	    		    if (connection == end) {
+	    		        closest = end;
+	    		        break;
+	    		    }
+
+	    		    double toCurr = connection.findDistance(current);
+	    		    double toEnd = connection.findDistance(end);
+
+	    		    if (toCurr < closestToCurr && toEnd < closestToEnd) {
+	    		        closest = connection;
+	    		        closestToCurr = toCurr;
+	    		        closestToEnd = toEnd;
+	    		    }
+	    		}
+    		    print(closest);
+    		    current = closest;
+	    		path.add(current);
+	    		visited.add(current);
+    		    if (current!=end) {
+        		    return algorithm("Distance",start,current,end,path,visited);
+    		    } else {
+    		    	for (Node node : path) {
+    		    		node.marker = true;
+    		    	}
+    		        print(Arrays.deepToString(path.toArray()));
+    		    }
+	    	}
 	    }
 	    return null;
 	}

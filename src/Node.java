@@ -12,9 +12,8 @@ public class Node {
 	int y;
 	int size;
 	int weighted;
+	boolean marker;
 	ArrayList<Integer> congestion; // traffic values
-	ArrayList<Double> distance; // distance relative to other nodes, unweighted
-	ArrayList<Integer> weights; // distance from start to end
 	ArrayList<Node> connections;
 	ArrayList<Node> next;
 	ArrayList<Node> prev;
@@ -32,11 +31,9 @@ public class Node {
 	public Node(int xx, int yy, String t, int s) {
 		x = xx;
 		y = yy;
+		marker = false;
 		connections = new ArrayList<Node>();
 		congestion = new ArrayList<Integer>();
-		distance = new ArrayList<Double>();
-		weights = new ArrayList<Integer>();
-		weighted = 0;
 		next = new ArrayList<Node>();
 		prev = new ArrayList<Node>();
 		size = s;
@@ -57,7 +54,6 @@ public class Node {
 	public void add(Node node, String type) {
 		this.congestion.add(1);
 		this.connections.add(node);
-		this.distance.add(findDistance(node));
 		if (type.equals("prev")) {
 			this.prev.add(node);
 		} else if (type.equals("next")) {

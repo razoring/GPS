@@ -164,6 +164,10 @@ abstract class GPSBase extends JPanel {
 	abstract void draw(Graphics g);
 	
 	// print functions to act like python
+	public void print() {
+		System.out.println("");
+	}
+	
 	public void print(Object str) {
 		System.out.println(str);
 	}

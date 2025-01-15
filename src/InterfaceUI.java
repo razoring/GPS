@@ -224,7 +224,7 @@ public class InterfaceUI extends JFrame {
                 System.out.println("Ending Location: " + GPSApp.selectedNode2);
             } else if (event.getSource() == forceUpdate && nodeSelection == 0) { //Forcefully updates the UI
                 System.out.println("Force Update mapPanel");
-                app.repaint();
+                GPSApp.elapsed=1200;
             }
 
 		} // end method actionPerformed	
