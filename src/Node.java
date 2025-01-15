@@ -48,7 +48,7 @@ public class Node {
 	}
 	
 	public double findDistance(Node target) {
-		return Math.sqrt(Math.abs(target.x-this.x)+Math.abs(target.y-this.y)); // pythagorean theorem
+		return Math.sqrt(Math.pow(Math.abs(target.x-this.x), 2)+Math.pow(Math.abs(target.y-this.y), 2)); // pythagorean theorem
 	}
 	
 	public void add(Node node, String type) {
