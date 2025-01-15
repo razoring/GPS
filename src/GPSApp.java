@@ -143,16 +143,20 @@ public class GPSApp extends GPSBase {
 	}
 	
 	public Object algorithm(String type, Node start, Node current, Node end, ArrayList<Node> visited) {
-		if (type.equals("Primitive")) { // first type of algorithm
-		} else if (type.equals("DFS")) {
-		} else if (type.equals("A*")) {
-		} else if (type.equals("Dijkstra")) {
-			for (Node next : current.connections) {
-				if (next.distance) {
-					
-				}
-			}
-		}
-		return null;
+	    if (type.equals("Primitive")) {
+	    } else if (type.equals("DFS")) {
+	    } else if (type.equals("A*")) {
+	    } else if (type.equals("Dijkstra")) {
+	        for (Node node : intersections) {
+	        	double baseDistance = start.findDistance(end);
+	        	HashMap<Node,Double> connected = new HashMap<Node,Double>();
+	        	for (Node connection : node.connections) {
+	        		connected.put(connection, connection.findDistance(current));
+	        	}
+	        	print(connected);
+	        }
+	    }
+	    return null;
 	}
+
 }
