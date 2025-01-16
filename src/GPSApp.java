@@ -30,10 +30,10 @@ public class GPSApp extends GPSBase {
 					//print(Arrays.deepToString(nodes.toArray()));
 					//print(findConnections(findNearestNode(x,y,50)).size());
 					if (nodeType > 0) {
-						if (selectedNode1 == null || nodeType == 1) {
+						if (nodeType == 1) {
 							selectedNode1 = findNearestNode(x,y,10);
 							InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
-						} else if ((selectedNode1 != null && selectedNode2 == null) || nodeType == 2) {
+						} else if (nodeType == 2) {
 							selectedNode2 = findNearestNode(x,y,10);
 							InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
 						}
