@@ -18,12 +18,18 @@ abstract class GPSBase extends JPanel {
 	public static Node selectedNode1 = null;
 	public static Node selectedNode2 = null;
 
+	/*
+	 * Constructor for GPSBase.
+	 */
 	public GPSBase(String imagePath) {
 		mapImage = new ImageIcon(imagePath).getImage();
         clearDuplicates();
 		readFromFile();
 	}
 	
+	/*
+	 * Determines the closest node within a specific radius of the user's click.
+	 */
 	public Node findNearestNode(int x, int y, int tolerance) {
 		for (Node node : nodes) {
 			if (Math.abs(node.x - x) <= tolerance && Math.abs(node.y - y) <= tolerance) {
@@ -33,6 +39,9 @@ abstract class GPSBase extends JPanel {
 		return null;
 	}
 	
+	/*
+	 * Returns a node's coordinates
+	 */
 	private Node getNode(String item, Node parent, String position) {
 	    String[] parts = item.split("\\(");
 	    if (parts.length < 2) {
@@ -125,6 +134,9 @@ abstract class GPSBase extends JPanel {
 		}
     }
 	
+	/*
+	 * Method for reading the map.txt file
+	 */
 	public void readFromFile() {
 	    try {
 	        if (save.createNewFile()) {
