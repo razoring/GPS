@@ -8,10 +8,11 @@ public class TimerListener {
 	public static void wait(int i) {
 		try {
 			ActionListener ticktock = new ActionListener() {
-				public void actionPerformed(ActionEvent evnt) {
+				public void actionPerformed(ActionEvent e) {
 					
 				}
 			};
+			
 			Timer timer = new Timer(i*100, ticktock); // timer is ticking
 			timer.setRepeats(false); // by using this, we are asking to off timer once
 			timer.start();
@@ -19,5 +20,20 @@ public class TimerListener {
 		} catch (InterruptedException expn) {
 			
 		}
+	}
+	
+	public void startLoop() {
+		while (true) {
+			wait(1);
+			time++;
+			
+			if (time>=120) {
+				time = 0;
+			}
+		}
+	}
+	
+	public int getTime() {
+		return time;
 	}
 }

@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashSet;
+import java.util.Stack;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -24,6 +25,9 @@ public class InterfaceUI extends JFrame {
     private JCheckBox speed;
     private JCheckBox traffic;
     public static int nodeSelection = 0; //For buttons
+    
+
+    GPSApp gpsApp = new GPSApp(null);
 
     /**
      * Constructor, handles final display layout, and contains ActionListeners for all interactive elements
@@ -31,7 +35,7 @@ public class InterfaceUI extends JFrame {
     public InterfaceUI() {
         super("GPS Interface");
         setLayout(inter);
-        JPanel mapPanel = GPSApp.panel;
+        JPanel mapPanel = gpsApp.panel;
 
         add(selectUI(), BorderLayout.EAST); 
         add(mapPanel, BorderLayout.CENTER); //Add map to main UI
@@ -143,7 +147,7 @@ public class InterfaceUI extends JFrame {
         app.setCursor(Cursor.CROSSHAIR_CURSOR); 
 
         while(true) { //To constantly update the traffic level update countdown
-            trafficTimer.setText("Traffic update in: " + (120 - (GPSApp.elapsed)/10));
+            //trafficTimer.setText("Traffic update in: " + (120 - (gpsApp.elapsed)/10));
             //app.repaint(); //For debugging purposes
         }
         
@@ -222,15 +226,14 @@ public class InterfaceUI extends JFrame {
                 nodeSelection = 2; //Set node selection type to 2 (destination)
             } else if (event.getSource() == routeCalculate && nodeSelection == 0) { //Calculates routes given considerations
                 System.out.println("Route Calculations");
-                System.out.println("Starting Location: " + GPSApp.selectedNode1);
-                System.out.println("Ending Location: " + GPSApp.selectedNode2);
-                GPSApp gpsApp = new GPSApp(null);
-				gpsApp.algorithm("Distance", GPSApp.selectedNode1, GPSApp.selectedNode1, GPSApp.selectedNode2, new HashSet<Node>(), new HashSet<Node>());
-                GPSApp.selectedNode1 = null;
-                GPSApp.selectedNode2 = null;
+                System.out.println("Starting Location: " + gpsApp.selectedNode1);
+                System.out.println("Ending Location: " + gpsApp.selectedNode2);
+				gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, new Stack<Node>(), new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""));
+                gpsApp.selectedNode1 = null;
+                gpsApp.selectedNode2 = null;
             } else if (event.getSource() == forceUpdate && nodeSelection == 0) { //Forcefully updates the UI
                 System.out.println("Force Update mapPanel");
-                GPSApp.panel.repaint();
+                gpsApp.panel.repaint();
             }
 
 		} // end method actionPerformed	

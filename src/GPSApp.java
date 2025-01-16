@@ -13,12 +13,11 @@ import javax.swing.*;
 public class GPSApp extends GPSBase {
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
-	public static int elapsed = 0;
 
 	public GPSApp(String imagePath) {
         super(imagePath);
-        generateTraffic();
 
+		print("Loading nodes... please be patient");
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -54,34 +53,11 @@ public class GPSApp extends GPSBase {
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 		
 		for (Node node : nodes) {
-			/*
-			if (node.next != null) {
-			    g2d.setStroke(new BasicStroke(4));
-				for (Node next : node.next) {
-					g.setColor(Color.black);
-					g.drawLine(node.x, node.y, next.x, next.y);
-					
-					if (node.marker) {
-						g.setColor(Color.blue);
-					}
-					if (node.size==1) {
-						g.fillOval(node.x - 5, node.y - 5, 10, 10);
-					} else {
-						g.fillOval(node.x - 3, node.y - 3, 6, 6);
-					}
-				}
-			}*/
-			
-			
 			for (Integer value : node.congestion) {
 				if (node.type.equals("CURVE")) {
 					// print(value);
 				}
-				if (node.marker) {
-					g.setColor(Color.blue);
-				} else {
-					g.setColor(lvl[value]);
-				}
+				g.setColor(lvl[value]);
 			}
 
 			if (node.next != null) {
@@ -94,11 +70,15 @@ public class GPSApp extends GPSBase {
 
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
-				g.setColor(Color.black);
+				if (node.marker) {
+					g.setColor(Color.blue);
+				} else {
+					g.setColor(Color.black);
+				}
 				if (node.connections != null) {
 					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
 					g2d.setFont(text);
-					g2d.drawString((int) (Math.pow((node.getSpeed() / 3.78), 1.1) + 10) + "km/h", node.x, node.y - 5);
+					g2d.drawString((int)(node.getSpeed(false)) + "km/h", node.x, node.y - 5);
 				}
 				if (node.size == 1) {
 					g.fillOval(node.x - 5, node.y - 5, 10, 10);
@@ -130,15 +110,21 @@ public class GPSApp extends GPSBase {
 	public void paintComponent(Graphics g) { // TODO: DO NOT REFRESH EXTERNALLY
 		super.paintComponent(g);
 		this.draw(g);
+        repaint();
 	}
 	
-	public Object algorithm(String type, Node start, Node current, Node end, HashSet<Node> path, HashSet<Node> visited) {
+	public Object algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers) {
 	    if (type.equals("Distance") && current != null) {
-	        Node closest = null;
 	        double closestDistance = Double.MAX_VALUE;
+	        Node closest = null;
 
 		    if (current == end) {
 		    	print(Arrays.deepToString(path.toArray()));
+		    	
+		    	for (Node item : path) {
+		    		item.marker = true;
+		    	}
+		    	
 		        return path;
 		    }
 		    
@@ -149,7 +135,14 @@ public class GPSApp extends GPSBase {
 	            }
 
 	            if (!visited.contains(connection)) {
-	                double combinedDistance = connection.findDistance(current) + connection.findDistance(end);
+	            	HashMap<String,Integer> weights = new HashMap<String,Integer>();
+	            	weights.put("speed",(int)(connection.getSpeed(true)));
+	            	weights.put("traffic",connection.getTraffic());
+	            	int weight = 0;
+	            	for (String modifier : modifiers.split(",")) {
+	            		weight = weight+weights.get(modifier);
+	            	}
+	                double combinedDistance = (connection.findDistance(current) + 0) + connection.findDistance(end);
 	                
 	                if (combinedDistance < closestDistance) {
 	                    closest = connection;
@@ -159,14 +152,20 @@ public class GPSApp extends GPSBase {
 	        }
 
 	        if (closest != null) {
-	            path.add(closest);
+	            path.push(closest);
 	            visited.add(closest);
-	            return algorithm("Distance", start, closest, end, path, visited);
+	            return algorithm("Distance", start, closest, end, path, visited, modifiers);
 	        } else {
-	        	return null;
+	        	print(path);
+				if (!path.isEmpty()) {
+					path.pop();
+					if (!path.isEmpty()) {
+						return algorithm("Distance", start, path.getLast(), end, path, visited, modifiers);
+					}
+				}
+				return null;
 	        }
 	    }
-
 	    return null;
 	}
 

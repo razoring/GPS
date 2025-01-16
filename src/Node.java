@@ -11,7 +11,6 @@ public class Node {
 	int x;
 	int y;
 	int size;
-	int weighted;
 	boolean marker;
 	ArrayList<Integer> congestion; // traffic values
 	ArrayList<Node> connections;
@@ -51,12 +50,26 @@ public class Node {
 		return Math.sqrt(Math.pow(Math.abs(target.x-this.x), 2)+Math.pow(Math.abs(target.y-this.y), 2)); // pythagorean theorem
 	}
 	
-	public int getSpeed() {
+	public int getDistance() {
 		int avg = 0;
 		for (Node node : this.connections ) {
 			avg = (int)(avg+this.findDistance(node));
 		}
 		return this.connections.size()<1?0:avg/this.connections.size();
+	}
+	
+	public int getTraffic() {
+		int avg = 0;
+		for (Node node : this.connections ) {
+			for (Integer value : this.congestion) {
+				avg = avg+(int)(value);
+			}
+		}
+		return this.connections.size()<1?0:avg/this.connections.size();
+	}
+	
+	public double getSpeed() {
+		return (Math.pow(((this.getDistance()) / 3.78), 1.1) + 10);
 	}
 	
 	public void add(Node node, String type) {
