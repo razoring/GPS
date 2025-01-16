@@ -126,6 +126,7 @@ public class GPSApp extends GPSBase {
 	            for (Node item : path) {
 	            	item.marker = true;
 	            }
+	            print(Arrays.toString(path.toArray()));
 	            return path;
 	        }
 
