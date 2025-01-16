@@ -3,7 +3,6 @@ import java.awt.event.*;
 import java.util.HashSet;
 
 import javax.swing.*;
-import javax.swing.event.MouseInputListener;
 
 /**
  * Jiawei Chen, Raymond So <p>

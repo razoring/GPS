@@ -123,6 +123,9 @@ public class GPSApp extends GPSBase {
 		}
 	}
 	
+	/*
+	 * Sets traffic for all nodes on the map.
+	 */
 	public void generateTraffic() {
 		for (Node node : nodes) {
 			if (nodes.contains(node)) {
