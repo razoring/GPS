@@ -11,6 +11,7 @@ import javax.swing.*;
  * Also contains route calculation function using Dijkstra's Algorithm.
  */
 public class GPSApp extends GPSBase {
+	public static Stack<Node> path = new Stack<Node>();
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
 	
@@ -33,9 +34,11 @@ public class GPSApp extends GPSBase {
 						if (nodeType == 1) {
 							selectedNode1 = findNearestNode(x,y,10);
 							InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
+							print(Arrays.deepToString(selectedNode1.connections.toArray()));
 						} else if (nodeType == 2) {
 							selectedNode2 = findNearestNode(x,y,10);
 							InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
+							print(Arrays.deepToString(selectedNode2.connections.toArray()));
 						}
 	
 						InterfaceUI.nodeSelection = 0;
@@ -75,6 +78,17 @@ public class GPSApp extends GPSBase {
 				if (nodes.contains(node)) {
 					if (node.marker) {
 						g.setColor(Color.blue);
+						
+						Node lastNode = null;
+						for (Node draw : path) {
+							if (lastNode==null) {
+								lastNode = draw;
+								continue;
+							} else {
+								g.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
+								lastNode = draw;
+							}
+						}
 					} else {
 						g.setColor(Color.black);
 					}
@@ -138,6 +152,7 @@ public class GPSApp extends GPSBase {
 
 	            if (!visited.contains(connection)) {
 	            	int weight = 0;
+	            	
 	            	/*HashMap<String,Integer> weights = new HashMap<String,Integer>();
 	            	weights.put("speed",(int)(connection.getSpeed()));
 	            	weights.put("traffic",connection.getTraffic());
@@ -149,7 +164,7 @@ public class GPSApp extends GPSBase {
 	            	}*/
 	                double combinedDistance = (connection.findDistance(current) + weight) + connection.findDistance(end);
 
-	                if (combinedDistance <= closestDistance) {
+	                if (combinedDistance < closestDistance) {
 	                    closest = connection;
 	                    closestDistance = combinedDistance;
 	                }
