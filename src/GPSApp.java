@@ -78,7 +78,7 @@ public class GPSApp extends GPSBase {
 				if (node.connections != null) {
 					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
 					g2d.setFont(text);
-					g2d.drawString((int)(node.getSpeed(false)) + "km/h", node.x, node.y - 5);
+					g2d.drawString((int)(node.getSpeed()) + "km/h", node.x, node.y - 5);
 				}
 				if (node.size == 1) {
 					g.fillOval(node.x - 5, node.y - 5, 10, 10);
@@ -118,16 +118,14 @@ public class GPSApp extends GPSBase {
 	        double closestDistance = Double.MAX_VALUE;
 	        Node closest = null;
 
-		    if (current == end) {
-		    	print(Arrays.deepToString(path.toArray()));
-		    	
-		    	for (Node item : path) {
-		    		item.marker = true;
-		    	}
-		    	
-		        return path;
-		    }
-		    
+	        if (current == end) {
+	            // mark all nodes in the path and return the path
+	            for (Node item : path) {
+	            	item.marker = true;
+	            }
+	            return path;
+	        }
+
 	        for (Node connection : current.connections) {
 	            if (connection == end) {
 	                closest = end;
@@ -135,16 +133,19 @@ public class GPSApp extends GPSBase {
 	            }
 
 	            if (!visited.contains(connection)) {
-	            	HashMap<String,Integer> weights = new HashMap<String,Integer>();
-	            	weights.put("speed",(int)(connection.getSpeed(true)));
+	            	int weight = 0;
+	            	/*HashMap<String,Integer> weights = new HashMap<String,Integer>();
+	            	weights.put("speed",(int)(connection.getSpeed()));
 	            	weights.put("traffic",connection.getTraffic());
 	            	int weight = 0;
-	            	for (String modifier : modifiers.split(",")) {
-	            		weight = weight+weights.get(modifier);
-	            	}
-	                double combinedDistance = (connection.findDistance(current) + 0) + connection.findDistance(end);
-	                
-	                if (combinedDistance < closestDistance) {
+	            	if (!modifiers.isEmpty()) {
+		            	for (String modifier : modifiers.split(",")) {
+		            		weight = weight+weights.get(modifier);
+		            	}
+	            	}*/
+	                double combinedDistance = (connection.findDistance(current) + weight) + connection.findDistance(end);
+
+	                if (combinedDistance <= closestDistance) {
 	                    closest = connection;
 	                    closestDistance = combinedDistance;
 	                }
@@ -156,14 +157,13 @@ public class GPSApp extends GPSBase {
 	            visited.add(closest);
 	            return algorithm("Distance", start, closest, end, path, visited, modifiers);
 	        } else {
-	        	print(path);
-				if (!path.isEmpty()) {
-					path.pop();
-					if (!path.isEmpty()) {
-						return algorithm("Distance", start, path.getLast(), end, path, visited, modifiers);
-					}
-				}
-				return null;
+	            if (!path.isEmpty()) {
+	                path.pop();
+	                if (!path.isEmpty()) {
+	                    return algorithm("Distance", start, path.getLast(), end, path, visited, modifiers);
+	                }
+	            }
+	            return null;
 	        }
 	    }
 	    return null;
