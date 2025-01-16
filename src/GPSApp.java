@@ -21,25 +21,32 @@ public class GPSApp extends GPSBase {
 
         addMouseListener(new MouseAdapter() {
             @Override
+			/*
+			 * Handles mouse clicks within the map itself. Uses GPSBase's findNearestNode function to detect
+			 * nodes within a certain radius of the mouse click, then returns its x and y coordinates.
+			 */
             public void mouseClicked(MouseEvent e) {
-                int x = e.getX();
-                int y = e.getY();
-                int nodeType = InterfaceUI.nodeSelection;
+                try {
+					int x = e.getX();
+					int y = e.getY();
+					int nodeType = InterfaceUI.nodeSelection;
 
-                //print(findNearestNode(x,y,10));
-                //print(Arrays.deepToString(nodes.toArray()));
-                //print(findConnections(findNearestNode(x,y,50)).size());
-				if (nodeType > 0) {
-					if (selectedNode1 == null || nodeType == 1) {
-						selectedNode1 = findNearestNode(x,y,10);
-						InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
-					} else if ((selectedNode1 != null && selectedNode2 == null) || nodeType == 2) {
-						selectedNode2 = findNearestNode(x,y,10);
-						InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
-						//Temporarily commented out. Set selectedNode1 and selectedNode2 to null AFTER algo runs
+					//print(findNearestNode(x,y,10));
+					//print(Arrays.deepToString(nodes.toArray()));
+					//print(findConnections(findNearestNode(x,y,50)).size());
+					if (nodeType > 0) { //nodeType is defaulted to 0 when neither button is active.
+						if (nodeType == 1) { //Selecting starting position
+							selectedNode1 = findNearestNode(x,y,10);
+							InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
+						} else if (nodeType == 2) { //Selecting destination
+							selectedNode2 = findNearestNode(x,y,10);
+							InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
+						}
+
+						InterfaceUI.nodeSelection = 0; //Reset selection type
 					}
-
-					InterfaceUI.nodeSelection = 0;
+				} catch (Exception NullPointerException) {
+					System.err.println("Node not found.");
 				}
                 
             }
@@ -48,7 +55,13 @@ public class GPSApp extends GPSBase {
 
 	
 	@Override
-	void draw(Graphics g) {
+	/*
+	 * Draws the road lines on the map. Also applies a colour corresponding to the road's traffic level.
+	 * RED: Level 2
+	 * YELLOW: Level 1
+	 * Green: Level 0
+	 */
+	void draw(Graphics g) { 
 		Graphics2D g2d = (Graphics2D) g;
 		Color lvl[] = {Color.green, new Color(226,186,52),Color.red};
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
@@ -74,7 +87,7 @@ public class GPSApp extends GPSBase {
 			
 			
 			for (Integer value : node.congestion) {
-				if (node.type.equals("CURVE")) {
+				if (node.type.equals("CURVE")) { //Ignore curves
 					// print(value);
 				}
 				if (node.marker) {
@@ -84,7 +97,7 @@ public class GPSApp extends GPSBase {
 				}
 			}
 
-			if (node.next != null) {
+			if (node.next != null) { //Null check for a next node
 				g2d.setStroke(new BasicStroke(5));
 				for (Node next : node.next) {
 					g.drawLine(node.x, node.y, next.x, next.y);
@@ -92,6 +105,7 @@ public class GPSApp extends GPSBase {
 			}
 		}
 
+		//Display speed limits of every node, attached to intersections
 		for (Node node : intersections) {
 			if (nodes.contains(node)) {
 				g.setColor(Color.black);
@@ -132,6 +146,7 @@ public class GPSApp extends GPSBase {
 		this.draw(g);
 	}
 	
+	//Using Dijkstra's Algorithm to determine the fastest route from start to destination.
 	public Object algorithm(String type, Node start, Node current, Node end, HashSet<Node> path, HashSet<Node> visited) {
 	    if (type.equals("Distance") && current != null) {
 	        Node closest = null;
