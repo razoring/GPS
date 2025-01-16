@@ -160,7 +160,7 @@ public class GPSApp extends GPSBase {
 	            if (!path.isEmpty()) {
 	                path.pop();
 	                if (!path.isEmpty()) {
-	                    return algorithm("Distance", start, path.getLast(), end, path, visited, modifiers);
+	                    return algorithm("Distance", start, path.lastElement(), end, path, visited, modifiers);
 	                }
 	            }
 	            return null;
