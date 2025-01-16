@@ -48,7 +48,15 @@ public class Node {
 	}
 	
 	public double findDistance(Node target) {
-		return Math.sqrt(Math.abs(target.x-this.x)+Math.abs(target.y-this.y)); // pythagorean theorem
+		return Math.sqrt(Math.pow(Math.abs(target.x-this.x), 2)+Math.pow(Math.abs(target.y-this.y), 2)); // pythagorean theorem
+	}
+	
+	public int getSpeed() {
+		int avg = 0;
+		for (Node node : this.connections ) {
+			avg = (int)(avg+this.findDistance(node));
+		}
+		return this.connections.size()<1?0:avg/this.connections.size();
 	}
 	
 	public void add(Node node, String type) {
