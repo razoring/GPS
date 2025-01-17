@@ -98,6 +98,7 @@ public class GPSApp extends GPSBase {
 						Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
 						g2d.setFont(text);
 						g2d.drawString((int)(node.getSpeed()) + "km/h", node.x, node.y - 5);
+						g2d.drawString(node.x+","+node.y, node.x, node.y - 15);
 					}
 					if (node.size == 1) {
 						g.fillOval(node.x - 5, node.y - 5, 10, 10);
@@ -132,46 +133,34 @@ public class GPSApp extends GPSBase {
         repaint();
 	}
 	
-	public Object algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers) {
-		path.push(start);
+	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers) {
+	    print(path);
 		if (type.equals("Distance") && current != null) {
-	        double closestDistance = Double.MAX_VALUE;
-	        Node closest = null;
-
-	        if (current == end) {
-	            // mark all nodes in the path and return the path
+	    	if (current == end) {
 	            for (Node item : path) {
-	            	item.marker = true;
+	                item.marker = true;
 	            }
-	            path.push(end);
-	            print(Arrays.toString(path.toArray()));
+		        path.push(end);
 	            return path;
 	        }
 
+	        Node closest = null;
+	        double closestDistance = Double.MAX_VALUE;
+
 	        for (Node connection : current.connections) {
+	            if (visited.contains(connection)) {
+	                continue; // Avoid revisiting nodes
+	            }
+
 	            if (connection == end) {
 	                closest = end;
 	                break;
 	            }
 
-	            if (!visited.contains(connection)) {
-	            	int weight = 0;
-	            	
-	            	/*HashMap<String,Integer> weights = new HashMap<String,Integer>();
-	            	weights.put("speed",(int)(connection.getSpeed()));
-	            	weights.put("traffic",connection.getTraffic());
-	            	int weight = 0;
-	            	if (!modifiers.isEmpty()) {
-		            	for (String modifier : modifiers.split(",")) {
-		            		weight = weight+weights.get(modifier);
-		            	}
-	            	}*/
-	                double combinedDistance = (connection.findDistance(current) + weight) + connection.findDistance(end);
-
-	                if (combinedDistance < closestDistance) {
-	                    closest = connection;
-	                    closestDistance = combinedDistance;
-	                }
+	            double combinedDistance = connection.findDistance(current) + connection.findDistance(end);
+	            if (combinedDistance < closestDistance) {
+	                closest = connection;
+	                closestDistance = combinedDistance;
 	            }
 	        }
 
@@ -180,16 +169,17 @@ public class GPSApp extends GPSBase {
 	            visited.add(closest);
 	            return algorithm("Distance", start, closest, end, path, visited, modifiers);
 	        } else {
+	            // Backtracking
 	            if (!path.isEmpty()) {
-	                path.pop();
+	            	path.pop(); // Unvisit the node to allow other paths, but retain the information that it has been visited to stop stack overflow
 	                if (!path.isEmpty()) {
-	                    return algorithm("Distance", start, path.lastElement(), end, path, visited, modifiers);
+	                    return algorithm("Distance", start, path.peek(), end, path, visited, modifiers);
 	                }
+	            } else {
+                    return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers); // fail safe, reverse the path and continue
 	            }
-	            return null;
 	        }
 	    }
-	    return null;
+        return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers); // fail safe, reverse the path and continue
 	}
-
 }
