@@ -12,8 +12,8 @@ import javax.swing.*;
  */
 public class InterfaceUI extends JFrame {
 
-    private BorderLayout inter = new BorderLayout();
-    private static InterfaceUI app = new InterfaceUI();
+    private final BorderLayout inter = new BorderLayout();
+    private static final InterfaceUI app = new InterfaceUI();
     private JLabel mouseCoordinate;
     private static JLabel trafficTimer;
     private JButton forceUpdate;
