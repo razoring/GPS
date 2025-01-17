@@ -234,7 +234,9 @@ public class InterfaceUI extends JFrame {
                     System.out.println("Starting Location: " + gpsApp.selectedNode1);
                     System.out.println("Ending Location: " + gpsApp.selectedNode2);
                     //(Stack<Node>) removed
-                    gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, new Stack<Node>(), new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""));
+                    Stack<Node> path = new Stack<Node>();
+                    path.add(gpsApp.selectedNode1);
+                    gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
                 } else if (event.getSource() == forceUpdate) { //Forcefully updates the UI
                     System.out.println("Force Update mapPanel");
                     gpsApp.panel.repaint();

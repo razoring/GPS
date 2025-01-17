@@ -133,53 +133,103 @@ public class GPSApp extends GPSBase {
         repaint();
 	}
 	
-	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers) {
-	    print(path);
+	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers, HashSet<Stack<Node>> iteration) {
 		if (type.equals("Distance") && current != null) {
 	    	if (current == end) {
-	            for (Node item : path) {
-	                item.marker = true;
-	            }
-		        path.push(end);
-	            return path;
+	    		iteration.add(path);
+	    		if (iteration.size()<=1) {
+	    			double distance = 0;
+	    			double lastDistance = 0;
+	    			for (Stack<Node> scrutinized : iteration) {
+	    				int index = 0;
+	    				lastDistance = distance;
+	    				distance = 0;
+			            for (Node node : scrutinized) {
+			            	distance = distance + node.findDistance(path.get(index-1));
+			            	index++;
+			            }
+			            if (distance < lastDistance) {
+		    				scrutinized.push(end);
+				            return scrutinized;
+			            }
+	    			}
+	    		}
 	        }
+	    	
+	    	if (iteration.size()<1) { // first iteration, prefer "shortest" path
+		        Node closest = null;
+		        double closestDistance = Double.MAX_VALUE;
 
-	        Node closest = null;
-	        double closestDistance = Double.MAX_VALUE;
+		        for (Node connection : current.connections) {
+		            if (visited.contains(connection)) {
+		                continue; // Avoid revisiting nodes
+		            }
 
-	        for (Node connection : current.connections) {
-	            if (visited.contains(connection)) {
-	                continue; // Avoid revisiting nodes
-	            }
+		            if (connection == end) {
+		                closest = end;
+		                break;
+		            }
 
-	            if (connection == end) {
-	                closest = end;
-	                break;
-	            }
+		            double combinedDistance = connection.findDistance(current) + connection.findDistance(end);
+		            if (combinedDistance < closestDistance) {
+		                closest = connection;
+		                closestDistance = combinedDistance;
+		            }
+		        }
 
-	            double combinedDistance = connection.findDistance(current) + connection.findDistance(end);
-	            if (combinedDistance < closestDistance) {
-	                closest = connection;
-	                closestDistance = combinedDistance;
-	            }
-	        }
+		        if (closest != null) {
+		            path.push(closest);
+		            visited.add(closest);
+		            return algorithm("Distance", start, closest, end, path, visited, modifiers, iteration);
+		        } else {
+		            // Backtracking
+		            if (!path.isEmpty()) {
+		            	path.pop(); // Unvisit the node to allow other paths, but retain the information that it has been visited to stop stack overflow
+		                if (!path.isEmpty()) {
+		                    return algorithm("Distance", start, path.peek(), end, path, visited, modifiers, new HashSet<Stack<Node>>());
+		                }
+		            } else {
+	                    return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers, new HashSet<Stack<Node>>()); // fail safe, reverse the path and ensure a response
+		            }
+		        }
+	    	} else if (iteration.size() == 1) { // second iteration, prefer "longest" path
+	    		Node closest = null;
+		        double closestDistance = Double.MAX_VALUE;
 
-	        if (closest != null) {
-	            path.push(closest);
-	            visited.add(closest);
-	            return algorithm("Distance", start, closest, end, path, visited, modifiers);
-	        } else {
-	            // Backtracking
-	            if (!path.isEmpty()) {
-	            	path.pop(); // Unvisit the node to allow other paths, but retain the information that it has been visited to stop stack overflow
-	                if (!path.isEmpty()) {
-	                    return algorithm("Distance", start, path.peek(), end, path, visited, modifiers);
-	                }
-	            } else {
-                    return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers); // fail safe, reverse the path and ensure a response
-	            }
-	        }
+		        for (Node connection : current.connections) {
+		            if (visited.contains(connection)) {
+		                continue; // Avoid revisiting nodes
+		            }
+
+		            if (connection == end) {
+		                closest = end;
+		                break;
+		            }
+
+		            double combinedDistance = connection.findDistance(current) + connection.findDistance(end);
+		            if (combinedDistance > closestDistance) {
+		                closest = connection;
+		                closestDistance = combinedDistance;
+		            }
+		        }
+
+		        if (closest != null) {
+		            path.push(closest);
+		            visited.add(closest);
+		            return algorithm("Distance", start, closest, end, path, visited, modifiers, iteration);
+		        } else {
+		            // Backtracking
+		            if (!path.isEmpty()) {
+		            	path.pop(); // Unvisit the node to allow other paths, but retain the information that it has been visited to stop stack overflow
+		                if (!path.isEmpty()) {
+		                    return algorithm("Distance", start, path.peek(), end, path, visited, modifiers, iteration);
+		                }
+		            } else {
+	                    return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers, new HashSet<Stack<Node>>()); // fail safe, reverse the path and ensure a response
+		            }
+		        }
+	    	}
 	    }
-        return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers); // fail safe, reverse the path and ensure a response
+        return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers, new HashSet<Stack<Node>>()); // fail safe, reverse the path and ensure a response
 	}
 }
