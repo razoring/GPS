@@ -1,9 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
-
 import javax.swing.*;
 
 /**
@@ -60,6 +58,7 @@ public class InterfaceUI extends JFrame {
         start.addActionListener(buttonListener);
         destination.addActionListener(buttonListener);
         routeCalculate.addActionListener(buttonListener);
+        clear.addActionListener(buttonListener);
 
         //infoUI - Allows the user to force update the UI.
         forceUpdate.addActionListener(buttonListener);
@@ -243,6 +242,9 @@ public class InterfaceUI extends JFrame {
                 } else if (event.getSource() == clear) {
                     start.setText("[Starting Position]");
                     destination.setText("[Destination]");
+                    gpsApp.selectedNode1 = null;
+                    gpsApp.selectedNode2 = null;
+                    System.err.println("Selections cleared");
                 }
             }
 
