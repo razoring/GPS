@@ -34,11 +34,11 @@ public class GPSApp extends GPSBase {
 						if (nodeType == 1) {
 							selectedNode1 = findNearestNode(x,y,10);
 							InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
-							print(Arrays.deepToString(selectedNode1.connections.toArray()));
+							//print(Arrays.deepToString(selectedNode1.connections.toArray()));
 						} else if (nodeType == 2) {
 							selectedNode2 = findNearestNode(x,y,10);
 							InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
-							print(Arrays.deepToString(selectedNode2.connections.toArray()));
+							//print(Arrays.deepToString(selectedNode2.connections.toArray()));
 						}
 	
 						InterfaceUI.nodeSelection = 0;
@@ -80,13 +80,15 @@ public class GPSApp extends GPSBase {
 						g.setColor(Color.blue);
 						
 						Node lastNode = null;
-						for (Node draw : path) {
-							if (lastNode==null) {
-								lastNode = draw;
-								continue;
-							} else {
-								g.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
-								lastNode = draw;
+						if (path!=null) {
+							for (Node draw : path) {
+								if (lastNode==null) {
+									lastNode = draw;
+									continue;
+								} else {
+									g.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
+									lastNode = draw;
+								}
 							}
 						}
 					} else {
@@ -131,7 +133,8 @@ public class GPSApp extends GPSBase {
 	}
 	
 	public Object algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers) {
-	    if (type.equals("Distance") && current != null) {
+		path.push(start);
+		if (type.equals("Distance") && current != null) {
 	        double closestDistance = Double.MAX_VALUE;
 	        Node closest = null;
 
@@ -140,6 +143,7 @@ public class GPSApp extends GPSBase {
 	            for (Node item : path) {
 	            	item.marker = true;
 	            }
+	            path.push(end);
 	            print(Arrays.toString(path.toArray()));
 	            return path;
 	        }

@@ -228,8 +228,6 @@ public class InterfaceUI extends JFrame {
                 System.out.println("Starting Location: " + gpsApp.selectedNode1);
                 System.out.println("Ending Location: " + gpsApp.selectedNode2);
 				gpsApp.path = (Stack<Node>) gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, new Stack<Node>(), new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""));
-                gpsApp.selectedNode1 = null;
-                gpsApp.selectedNode2 = null;
             } else if (event.getSource() == forceUpdate && nodeSelection == 0) { //Forcefully updates the UI
                 System.out.println("Force Update mapPanel");
                 gpsApp.panel.repaint();

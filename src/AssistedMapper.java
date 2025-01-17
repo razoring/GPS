@@ -118,7 +118,7 @@ public class AssistedMapper extends GPSBase {
         	nodes.add(newNode);
         	curves.add(newNode);
         } else if (mode.equals("INFO")) {
-        	System.out.println(findNearestNode(x,y,10).toSave());
+        	System.out.println(findNearestNode(x,y,10)+Arrays.deepToString(findNearestNode(x,y,10).connections.toArray()));
         }
 		
 		saveToFile();
