@@ -1,3 +1,4 @@
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -47,7 +48,7 @@ public class Node {
 	}
 	
 	public double findDistance(Node target) {
-		return Math.sqrt(Math.pow(Math.abs(target.x-this.x), 2)+Math.pow(Math.abs(target.y-this.y), 2)); // pythagorean theorem
+		return Math.sqrt(Math.pow((target.x-this.x), 2)+Math.pow((target.y-this.y), 2)); // pythagorean theorem
 	}
 	
 	public int getDistance() {
@@ -112,4 +113,5 @@ public class Node {
 	public void print(Object str, Object str2) {
 		System.out.println(str+", "+str2);
 	}
+
 }

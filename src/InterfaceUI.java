@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashSet;
-import java.util.Stack;
 
 import javax.swing.*;
 
@@ -21,6 +20,8 @@ public class InterfaceUI extends JFrame {
     public static JButton start;
     public static JButton destination;
     public JButton routeCalculate;
+    public JButton clear;
+    public JButton status;
     private JCheckBox speed;
     private JCheckBox traffic;
     public static int nodeSelection = 0; //For buttons
@@ -74,15 +75,17 @@ public class InterfaceUI extends JFrame {
         ui.add(new JPanel(), BorderLayout.EAST);
 
         //Top
-        JPanel topPanel = new JPanel(new GridLayout(4, 1, 10, 5));
+        JPanel topPanel = new JPanel(new GridLayout(5, 1, 10, 5));
         start = new JButton("[Starting Point]");
         destination = new JButton("[Destination]");
         routeCalculate = new JButton("[Calculate Routes]");
+        clear = new JButton("[Clear Selection]");
 
-        topPanel.add(new JLabel("<< Coordinate Selection >>", SwingConstants.CENTER));
+        topPanel.add(new JLabel("<< Actions >>", SwingConstants.CENTER));
         topPanel.add(start);
         topPanel.add(destination);
         topPanel.add(routeCalculate);
+        topPanel.add(clear);
 
         //Bottom
         JPanel bottomPanel = new JPanel(new GridLayout(5, 1, 10, 5));
@@ -214,23 +217,29 @@ public class InterfaceUI extends JFrame {
     private class ButtonEventListener implements ActionListener {
         @Override
 		public void actionPerformed( ActionEvent event ) {
-			if (event.getSource() == start && nodeSelection == 0) { //Allows the user to select their starting position
-                //Will only run while node selection isnt active
-                System.out.println("Toggle Starting Coordinate Selection");
-                start.setText("Awaiting input.."); //Prompt
-                nodeSelection = 1; //Set node selection type to 1 (start)
-            } else if (event.getSource() == destination && nodeSelection == 0) { //Allows the user to select their destination
-                System.out.println("Toggle Destination Coordinate Selection");
-                destination.setText("Awaiting input...");
-                nodeSelection = 2; //Set node selection type to 2 (destination)
-            } else if (event.getSource() == routeCalculate && nodeSelection == 0) { //Calculates routes given considerations
-                System.out.println("Route Calculations");
-                System.out.println("Starting Location: " + gpsApp.selectedNode1);
-                System.out.println("Ending Location: " + gpsApp.selectedNode2);
-				gpsApp.path = (Stack<Node>) gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, new Stack<Node>(), new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""));
-            } else if (event.getSource() == forceUpdate && nodeSelection == 0) { //Forcefully updates the UI
-                System.out.println("Force Update mapPanel");
-                gpsApp.panel.repaint();
+            if (nodeSelection == 0) {
+                if (event.getSource() == start) { //Allows the user to select their starting position
+                    //Will only run while node selection isnt active
+                    System.out.println("Toggle Starting Coordinate Selection");
+                    start.setText("Awaiting input.."); //Prompt
+                    nodeSelection = 1; //Set node selection type to 1 (start)
+                } else if (event.getSource() == destination) { //Allows the user to select their destination
+                    System.out.println("Toggle Destination Coordinate Selection");
+                    destination.setText("Awaiting input...");
+                    nodeSelection = 2; //Set node selection type to 2 (destination)
+                } else if (event.getSource() == routeCalculate && gpsApp.selectedNode1 != null && gpsApp.selectedNode2 != null) { //Calculates routes given considerations
+                    System.out.println("Route Calculations");
+                    System.out.println("Starting Location: " + gpsApp.selectedNode1);
+                    System.out.println("Ending Location: " + gpsApp.selectedNode2);
+                    //(Stack<Node>) removed
+                    gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, new Stack<Node>(), new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""));
+                } else if (event.getSource() == forceUpdate) { //Forcefully updates the UI
+                    System.out.println("Force Update mapPanel");
+                    gpsApp.panel.repaint();
+                } else if (event.getSource() == clear) {
+                    start.setText("[Starting Position]");
+                    destination.setText("[Destination]");
+                }
             }
 
 		} // end method actionPerformed	
