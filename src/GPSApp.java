@@ -141,12 +141,14 @@ public class GPSApp extends GPSBase {
 	    			double distance = 0;
 	    			double lastDistance = 0;
 	    			for (Stack<Node> scrutinized : iteration) {
-	    				int index = 0;
 	    				lastDistance = distance;
 	    				distance = 0;
+		    			Node previousNode = null;
 			            for (Node node : scrutinized) {
-			            	distance = distance + node.findDistance(path.get(index-1));
-			            	index++;
+			                if (previousNode != null) {
+			                    distance += previousNode.findDistance(node);
+			                }
+			                previousNode = node;
 			            }
 			            if (distance < lastDistance) {
 		    				scrutinized.push(end);
@@ -186,7 +188,7 @@ public class GPSApp extends GPSBase {
 		            if (!path.isEmpty()) {
 		            	path.pop(); // Unvisit the node to allow other paths, but retain the information that it has been visited to stop stack overflow
 		                if (!path.isEmpty()) {
-		                    return algorithm("Distance", start, path.peek(), end, path, visited, modifiers, new HashSet<Stack<Node>>());
+		                    return algorithm("Distance", start, path.peek(), end, path, visited, modifiers, iteration);
 		                }
 		            } else {
 	                    return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers, new HashSet<Stack<Node>>()); // fail safe, reverse the path and ensure a response
