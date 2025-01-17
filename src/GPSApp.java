@@ -176,10 +176,10 @@ public class GPSApp extends GPSBase {
 	                    return algorithm("Distance", start, path.peek(), end, path, visited, modifiers);
 	                }
 	            } else {
-                    return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers); // fail safe, reverse the path and continue
+                    return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers); // fail safe, reverse the path and ensure a response
 	            }
 	        }
 	    }
-        return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers); // fail safe, reverse the path and continue
+        return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers); // fail safe, reverse the path and ensure a response
 	}
 }
