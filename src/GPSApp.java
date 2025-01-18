@@ -17,7 +17,7 @@ public class GPSApp extends GPSBase {
 	public static Stack<Node> path = new Stack<Node>();
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
-	private boolean considerTraffic;
+	private boolean considerTraffic = true;
 	
 	public GPSApp(String imagePath) {
 		super(imagePath);
@@ -152,11 +152,12 @@ public class GPSApp extends GPSBase {
 	}
 	
 	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers, HashSet<Stack<Node>> iteration) {
-		int weight = 1; //default
+		double weight = 1; //default
+		weight /= start.getSpeed();
 
 		if(considerTraffic){ 
-			weight *= start.getTraffic()+1;
-			weight /= start.getSpeed();
+			weight *= start.getTraffic()+2;
+			
 		}
 		
 		if (type.equals("Distance") && current != null) {
