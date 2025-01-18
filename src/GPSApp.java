@@ -43,7 +43,7 @@ public class GPSApp extends GPSBase {
 					if (nodeType > 0) {
 						if (nodeType == 1) {
 							selectedNode1 = findNearestNode(x, y, 10);
-							InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
+							InterfaceUI.startButton.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
 							// print(Arrays.deepToString(selectedNode1.connections.toArray()));
 						} else if (nodeType == 2) {
 							selectedNode2 = findNearestNode(x, y, 10);
@@ -122,6 +122,7 @@ public class GPSApp extends GPSBase {
 	public void generateTraffic() {
 		for (Node node : nodes) {
 			if (nodes.contains(node)) {
+				print("set");
 				node.setTraffic();
 			}
 		}
@@ -143,14 +144,11 @@ public class GPSApp extends GPSBase {
 	}
 	
 	public void clearPath() {
+		for (Node node : path) {
+			node.marker = false;
+		}
 		path.clear();
 		path = new Stack<Node>();
-		
-		for (Node node : nodes) {
-			if (nodes.contains(node)) {
-				node.marker = false;
-			}
-		}
 	}
 	
 	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers, HashSet<Stack<Node>> iteration) {

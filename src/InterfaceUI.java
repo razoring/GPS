@@ -29,7 +29,7 @@ public class InterfaceUI extends JFrame {
     public static int nodeSelection = 0; //For buttons
     
 
-    GPSApp gpsApp = new GPSApp(null);
+    static GPSApp gpsApp = new GPSApp(null);
 
     /**
      * Constructor, handles final display layout, and contains ActionListeners for all interactive elements
@@ -167,6 +167,9 @@ public class InterfaceUI extends JFrame {
 		System.out.println("Loading nodes... please be patient");
         while(true) { //To constantly update the traffic level update countdown
             trafficTimer.setText("Traffic update in: " + (120-TimerListener.getTime()));
+            if (TimerListener.getTime()>=120) {
+            	gpsApp.generateTraffic();
+            }
         }
         
     }
@@ -253,6 +256,7 @@ public class InterfaceUI extends JFrame {
                     gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
                 } else if (event.getSource() == forceUpdate) { //Forcefully updates the UI
                     System.out.println("Force Update mapPanel");
+                    gpsApp.generateTraffic();
                 } else if (event.getSource() == clear) {
                     //start.setText("[Select Start]");
                     //destination.setText("[Select Destination]");

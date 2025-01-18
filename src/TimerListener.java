@@ -5,13 +5,12 @@ import javax.swing.Timer;
 public class TimerListener {
 	static int time = 0;
 	final static int DELAY = 120000; //2 minutes to milliseconds
-
+	
 	public static void wait(int i) {
 		try {
 			ActionListener ticktock = new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("2 minutes elapsed! Refreshing traffic...");
 				}
 			};
 			
@@ -31,6 +30,7 @@ public class TimerListener {
 		
 		if (t>=120) {
 			t = 0;
+			
 		}
 		time = t;
 		return startLoop(time);
