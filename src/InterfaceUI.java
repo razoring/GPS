@@ -238,13 +238,13 @@ public class InterfaceUI extends JFrame {
                     gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
                 } else if (event.getSource() == forceUpdate) { //Forcefully updates the UI
                     System.out.println("Force Update mapPanel");
-                    gpsApp.panel.repaint();
                 } else if (event.getSource() == clear) {
                     start.setText("[Starting Position]");
                     destination.setText("[Destination]");
                     gpsApp.selectedNode1 = null;
                     gpsApp.selectedNode2 = null;
                     System.err.println("Selections cleared");
+                    gpsApp.clearPath();
                 }
             }
 
