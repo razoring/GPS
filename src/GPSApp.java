@@ -17,19 +17,17 @@ public class GPSApp extends GPSBase {
 	public static Stack<Node> path = new Stack<Node>();
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
-	TimerListener timer = new TimerListener();
 	
 	public GPSApp(String imagePath) {
 		super(imagePath);
 		generateTraffic();
-		
-		Thread time = new Thread() {
-		    public void run() {
-		    	timer.startLoop();
-		    }  
+		Thread timer = new Thread() {
+			public void run() {
+				TimerListener elapsed = new TimerListener();
+				elapsed.startLoop(0);
+			}
 		};
-
-		time.start();
+		timer.start();
 
 		addMouseListener(new MouseAdapter() {
 			@Override
@@ -88,8 +86,8 @@ public class GPSApp extends GPSBase {
 		for (Node node : intersections) {
 			g.setColor(Color.black);
 			if (nodes.contains(node)) {
-				if (path != null) {
-					if (node.marker) {
+				if (node.marker) {
+					if (!path.isEmpty()) {
 						g.setColor(Color.blue);
 	
 						Node lastNode = null;
@@ -124,14 +122,12 @@ public class GPSApp extends GPSBase {
 	public void generateTraffic() {
 		for (Node node : nodes) {
 			if (nodes.contains(node)) {
-				node.marker = false;
 				node.setTraffic();
 			}
 		}
 	}
 
 	public static void main(String[] args) {
-		print("Loading nodes... please be patient");
 		frame.setCursor(Cursor.CROSSHAIR_CURSOR);
 		frame.add(panel);
 		frame.setSize(1200, 600);
@@ -147,7 +143,9 @@ public class GPSApp extends GPSBase {
 	}
 	
 	public void clearPath() {
-		path = null;
+		path.clear();
+		path = new Stack<Node>();
+		
 		for (Node node : nodes) {
 			if (nodes.contains(node)) {
 				node.marker = false;
@@ -162,7 +160,6 @@ public class GPSApp extends GPSBase {
 					item.marker = true;
 				}
 				path.push(end);
-				print("running");
 				return path;
 			}
 

@@ -148,10 +148,11 @@ public class InterfaceUI extends JFrame {
 		app.setSize(1200, 600); // set frame size
 		app.setVisible(true); // display frame
         app.setCursor(Cursor.CROSSHAIR_CURSOR); 
+		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		System.out.println("Loading nodes... please be patient");
         while(true) { //To constantly update the traffic level update countdown
-            //trafficTimer.setText("Traffic update in: " + (120 - (gpsApp.elapsed)/10));
-            //app.repaint(); //For debugging purposes
+            trafficTimer.setText("Traffic update in: " + (120-TimerListener.getTime()));
         }
         
     }
@@ -243,7 +244,7 @@ public class InterfaceUI extends JFrame {
                     destination.setText("[Destination]");
                     gpsApp.selectedNode1 = null;
                     gpsApp.selectedNode2 = null;
-                    System.err.println("Selections cleared");
+                    System.out.println("Selections cleared");
                     gpsApp.clearPath();
                 }
             }

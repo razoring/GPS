@@ -21,19 +21,19 @@ public class TimerListener {
 			
 		}
 	}
-	
-	public void startLoop() {
-		while (true) {
-			wait(1);
-			time++;
-			
-			if (time>=120) {
-				time = 0;
-			}
+
+	public int startLoop(int t) {
+		wait(1);
+		t++;
+		
+		if (t>=120) {
+			t = 0;
 		}
+		time = t;
+		return startLoop(time);
 	}
 	
-	public int getTime() {
+	public static int getTime() {
 		return time;
 	}
 }
