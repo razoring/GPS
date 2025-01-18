@@ -4,20 +4,23 @@ import javax.swing.Timer;
 
 public class TimerListener {
 	static int time = 0;
-	
-	public void wait(int i) {
+	final static int DELAY = 120000; //2 minutes to milliseconds
+
+	public static void wait(int i) {
 		try {
 			ActionListener ticktock = new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+					System.out.println("2 minutes elapsed! Refreshing traffic...");
 				}
 			};
 			
-			Timer timer = new Timer(i*100, ticktock); // timer is ticking
+			Timer timer = new Timer(DELAY, ticktock); // timer is ticking
 			timer.setRepeats(false); // by using this, we are asking to off timer once
 			timer.start();
 			Thread.sleep(i*1000);
-		} catch (InterruptedException e) {
+			
+		} catch (InterruptedException expn) {
 			
 		}
 	}
