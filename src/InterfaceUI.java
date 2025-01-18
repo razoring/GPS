@@ -11,13 +11,15 @@ import javax.swing.*;
  * starting position and destination, and allows for alternative routes based off checkbox selections.
  */
 public class InterfaceUI extends JFrame {
-
+    //TODO: Reorganize variables
     private final BorderLayout inter = new BorderLayout();
     private static final InterfaceUI app = new InterfaceUI();
     private JLabel mouseCoordinate;
+    public static JLabel startLabel;
+    public static JLabel endLabel;
     private static JLabel trafficTimer;
     private JButton forceUpdate;
-    public static JButton start;
+    public static JButton startButton;
     public static JButton destination;
     public JButton routeCalculate;
     public JButton clear;
@@ -40,7 +42,7 @@ public class InterfaceUI extends JFrame {
         add(selectUI(), BorderLayout.EAST); 
         add(mapPanel, BorderLayout.CENTER); //Add map to main UI
         //add(AssistedMapper.panel, BorderLayout.CENTER); //Toggleable for intersection mapping
-        add(infoUI(), BorderLayout.SOUTH);
+        add(debugUI(), BorderLayout.SOUTH);
 
         //ActionListeners
         MouseHandler mouse = new MouseHandler();
@@ -55,16 +57,28 @@ public class InterfaceUI extends JFrame {
         traffic.addItemListener(checkListener);
         speed.addItemListener(checkListener);
 
-        start.addActionListener(buttonListener);
+        startButton.addActionListener(buttonListener);
         destination.addActionListener(buttonListener);
         routeCalculate.addActionListener(buttonListener);
         clear.addActionListener(buttonListener);
 
-        //infoUI - Allows the user to force update the UI.
+        //debugUI - Allows the user to force update the UI.
         forceUpdate.addActionListener(buttonListener);
 
         
     }
+
+    /*
+     * Separate class for handling the top right of the UI. Contains the information for the InterfaceUI 
+     * (e.g. Start/End destination, current UI status)
+     */
+    private JPanel infoUI(){ 
+        JPanel info = new JPanel();
+
+
+        return info;
+    }
+
     /**
      * Handles layout for the right side of the display UI (interaction)
      * @return ui: Final panel containing all selectUI elements
@@ -77,13 +91,13 @@ public class InterfaceUI extends JFrame {
 
         //Top
         JPanel topPanel = new JPanel(new GridLayout(5, 1, 10, 5));
-        start = new JButton("[Starting Point]");
-        destination = new JButton("[Destination]");
+        startButton = new JButton("[Select Start]");
+        destination = new JButton("[Select Destination]");
         routeCalculate = new JButton("[Calculate Routes]");
         clear = new JButton("[Clear Selection]");
 
         topPanel.add(new JLabel("<< Actions >>", SwingConstants.CENTER));
-        topPanel.add(start);
+        topPanel.add(startButton);
         topPanel.add(destination);
         topPanel.add(routeCalculate);
         topPanel.add(clear);
@@ -122,9 +136,9 @@ public class InterfaceUI extends JFrame {
 
     /**
      * Handles layout for the bottom of the display UI (information, e.g. mouse coordinate and reset timer)
-     * @return info: Final panel containing all infoUI elements
+     * @return info: Final panel containing all debugUI elements
      */
-    private JPanel infoUI() {
+    private JPanel debugUI() {
         JPanel info = new JPanel(new BorderLayout()); //Main layout
         JPanel mCoord = new JPanel(new FlowLayout());
         JPanel traffic = new JPanel(new FlowLayout());
@@ -219,14 +233,14 @@ public class InterfaceUI extends JFrame {
         @Override
 		public void actionPerformed( ActionEvent event ) {
             if (nodeSelection == 0) {
-                if (event.getSource() == start) { //Allows the user to select their starting position
+                if (event.getSource() == startButton) { //Allows the user to select their starting position
                     //Will only run while node selection isnt active
                     System.out.println("Toggle Starting Coordinate Selection");
-                    start.setText("Awaiting input.."); //Prompt
+                    //startButton.setText("Awaiting input.."); //Prompt
                     nodeSelection = 1; //Set node selection type to 1 (start)
                 } else if (event.getSource() == destination) { //Allows the user to select their destination
                     System.out.println("Toggle Destination Coordinate Selection");
-                    destination.setText("Awaiting input...");
+                    //destination.setText("Awaiting input...");
                     nodeSelection = 2; //Set node selection type to 2 (destination)
                 } else if (event.getSource() == routeCalculate && gpsApp.selectedNode1 != null && gpsApp.selectedNode2 != null) { //Calculates routes given considerations
                     System.out.println("Route Calculations");
@@ -239,8 +253,8 @@ public class InterfaceUI extends JFrame {
                 } else if (event.getSource() == forceUpdate) { //Forcefully updates the UI
                     System.out.println("Force Update mapPanel");
                 } else if (event.getSource() == clear) {
-                    start.setText("[Starting Position]");
-                    destination.setText("[Destination]");
+                    //start.setText("[Select Start]");
+                    //destination.setText("[Select Destination]");
                     gpsApp.selectedNode1 = null;
                     gpsApp.selectedNode2 = null;
                     System.err.println("Selections cleared");
