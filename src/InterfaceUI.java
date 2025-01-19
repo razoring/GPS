@@ -256,8 +256,6 @@ public class InterfaceUI extends JFrame {
                     gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
                 } else if (event.getSource() == forceUpdate) { //Forcefully updates the UI
                     System.out.println("Force Update mapPanel");
-                    gpsApp.generateTraffic();
-            		gpsApp.repaint();
                 } else if (event.getSource() == clear) {
                     //start.setText("[Select Start]");
                     //destination.setText("[Select Destination]");
