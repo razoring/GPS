@@ -205,12 +205,8 @@ public class InterfaceUI extends JFrame {
                 System.out.println("Speed: ");
                 if (speed.isSelected()) {
                     System.out.print("Selected");
-                    gpsApp.considerTraffic = true;
-                    System.out.println("Traffic is now considered.");
                 } else {
                     System.err.print("Unselected");
-                    gpsApp.considerTraffic = false;
-                    System.out.println("Traffic is no longer considered.");
                 }
             }
 
@@ -242,7 +238,7 @@ public class InterfaceUI extends JFrame {
                     Stack<Node> path = new Stack<Node>();
                     path.add(gpsApp.selectedNode1);
                     gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
-                    status.setText("Distance: " + gpsApp.combinedDistance);
+                    status.setText("Distance: " + (gpsApp.selectedNode2.x - gpsApp.selectedNode1.x + gpsApp.selectedNode2.y - gpsApp.selectedNode1.y));
                 } else if (event.getSource() == clear) {
                     start.setText("[Select Start]");
                     destination.setText("[Select Destination]");
