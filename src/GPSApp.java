@@ -161,7 +161,7 @@ public class GPSApp extends GPSBase {
 	
 	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers, HashSet<Stack<Node>> iteration) {
 	    double weight = 1; // Default
-		String regex = [","];
+		String regex = "[,]";
 		String[] selectedMods = modifiers.split(regex);  
 
 	    if (selectedMods.contains("speed")) {
