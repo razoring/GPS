@@ -70,7 +70,7 @@ public class Node {
 	}
 	
 	public double getSpeed() {
-		return (Math.pow(((this.getDistance()) / 3.78), 1.1) + 10);
+		return (Math.pow(((this.getDistance()) / 3.78), 1.1) + 5);
 	}
 	
 	public void add(Node node, String type) {

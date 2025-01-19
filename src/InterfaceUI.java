@@ -14,11 +14,17 @@ public class InterfaceUI extends JFrame {
     //TODO: Reorganize variables
     private final BorderLayout inter = new BorderLayout();
     private static final InterfaceUI app = new InterfaceUI();
-    private JLabel mouseCoordinate;
+
+    //InfoUI Variables
     public static JLabel startLabel;
     public static JLabel endLabel;
+
+    //DebugUI Variables
+    private JLabel mouseCoordinate;
     private static JLabel trafficTimer;
     private JButton forceUpdate;
+
+    //SelectUI Variables
     public static JButton startButton;
     public static JButton destination;
     public JButton routeCalculate;
@@ -66,17 +72,6 @@ public class InterfaceUI extends JFrame {
         forceUpdate.addActionListener(buttonListener);
 
         
-    }
-
-    /*
-     * Separate class for handling the top right of the UI. Contains the information for the InterfaceUI 
-     * (e.g. Start/End destination, current UI status)
-     */
-    private JPanel infoUI(){ 
-        JPanel info = new JPanel();
-
-
-        return info;
     }
 
     /**

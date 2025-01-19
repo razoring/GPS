@@ -44,11 +44,11 @@ public class GPSApp extends GPSBase {
 					if (nodeType > 0) {
 						if (nodeType == 1) {
 							selectedNode1 = findNearestNode(x, y, 10);
-							InterfaceUI.startButton.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
+							InterfaceUI.startLabel.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
 							// print(Arrays.deepToString(selectedNode1.connections.toArray()));
 						} else if (nodeType == 2) {
 							selectedNode2 = findNearestNode(x, y, 10);
-							InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
+							InterfaceUI.endLabel.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
 							// print(Arrays.deepToString(selectedNode2.connections.toArray()));
 						}
 
@@ -156,7 +156,7 @@ public class GPSApp extends GPSBase {
 		weight /= start.getSpeed();
 
 		if(considerTraffic){ 
-			weight *= start.getTraffic()+2;
+			weight *= start.getTraffic()+1;
 			
 		}
 		
