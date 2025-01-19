@@ -18,7 +18,6 @@ public class InterfaceUI extends JFrame {
     public static JLabel startLabel;
     public static JLabel endLabel;
     private static JLabel trafficTimer;
-    private JButton forceUpdate;
     public static JButton start;
     public static JButton destination;
     public JButton routeCalculate;
@@ -61,11 +60,7 @@ public class InterfaceUI extends JFrame {
         destination.addActionListener(buttonListener);
         routeCalculate.addActionListener(buttonListener);
         clear.addActionListener(buttonListener);
-
-        //debugUI - Allows the user to force update the UI.
-        forceUpdate.addActionListener(buttonListener);
-
-        
+     
     }
 
     /**
