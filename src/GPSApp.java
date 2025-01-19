@@ -64,99 +64,67 @@ public class GPSApp extends GPSBase {
 	}
 
 	@Override
-	public void draw(Graphics g) {
-	    Graphics2D g2d = (Graphics2D) g;
-	    Color lvl[] = {Color.green, new Color(226, 186, 52), Color.red};
-	    g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
+	void draw(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		Color lvl[] = { Color.green, new Color(226, 186, 52), Color.red };
+		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 
-	    // HashMap to track animation progress
-	    Map<Node, Float> animationProgress = new HashMap<>();
+		for (Node node : nodes) {
+			for (Double value : node.congestion) {
+	            Color startColor = lvl[(int) Math.floor(value)];
+	            Color endColor = lvl[(int) Math.ceil(value)];
+	            float fraction = (float) (value - Math.floor(value));
 
-	    for (Node node : nodes) {
-	        for (int i = 0; i < node.congestion.size(); i++) {
-	            Integer currentValue = node.congestion.get(i);
-	            Integer previousValue = node.previousCongestion.get(i);
-	            
-	            if (!currentValue.equals(previousValue)) {
-	                // Initiate animation if values are different
-	                animateCongestion(node, previousValue, currentValue, animationProgress);
-	            }
+	            // Interpolating between startColor and endColor based on fraction
+	            int red = (int) (startColor.getRed() + (endColor.getRed() - startColor.getRed()) * fraction);
+	            int green = (int) (startColor.getGreen() + (endColor.getGreen() - startColor.getGreen()) * fraction);
+	            int blue = (int) (startColor.getBlue() + (endColor.getBlue() - startColor.getBlue()) * fraction);
 
-	            Color tweenColor = getTweenColor(lvl[previousValue], lvl[currentValue], animationProgress.getOrDefault(node, 1.0f));
-	            g.setColor(tweenColor);
+	            g.setColor(new Color(red, green, blue));
 	        }
 
-	        if (node.next != null) {
-	            g2d.setStroke(new BasicStroke(5));
-	            for (Node next : node.next) {
-	                g.drawLine(node.x, node.y, next.x, next.y);
-	            }
-	        }
-	    }
+			if (node.next != null) {
+				g2d.setStroke(new BasicStroke(5));
+				for (Node next : node.next) {
+					g.drawLine(node.x, node.y, next.x, next.y);
+				}
+			}
+		}
 
-	    // Continue with the rest of the draw logic for intersections
-	    drawIntersections(g2d);
-	}
-	
-	private void animateCongestion(Node node, int previousValue, int currentValue, Map<Node, Float> animationProgress) {
-	    // Initialize animation progress for the node if not already present
-	    if (!animationProgress.containsKey(node)) {
-	        animationProgress.put(node, 0.0f);
-	    }
-	    // Increase the animation progress over time
-	    float progress = animationProgress.get(node) + 0.05f;
-	    if (progress >= 1.0f) {
-	        progress = 1.0f;
-	        // Update the previous congestion to the current once the animation is complete
-	        node.previousCongestion.set(node.congestion.indexOf(currentValue), currentValue);
-	    }
-	    animationProgress.put(node, progress);
-	}
-
-	private Color getTweenColor(Color startColor, Color endColor, float progress) {
-	    int r = (int) (startColor.getRed() + progress * (endColor.getRed() - startColor.getRed()));
-	    int g = (int) (startColor.getGreen() + progress * (endColor.getGreen() - startColor.getGreen()));
-	    int b = (int) (startColor.getBlue() + progress * (endColor.getBlue() - startColor.getBlue()));
-	    return new Color(r, g, b);
-	}
-
-	private void drawIntersections(Graphics2D g2d) {
-	    for (Node node : intersections) {
-	        g2d.setColor(Color.black);
-	        if (nodes.contains(node)) {
-	            if (node.marker) {
-	                if (!path.isEmpty()) {
-	                    if (path.getFirst() != node || path.getLast() != node) {
-	                        g2d.setColor(Color.blue);
-
-	                        Node lastNode = null;
-	                        for (Node draw : path) {
-	                            if (lastNode == null) {
-	                                lastNode = draw;
-	                                continue;
-	                            } else {
-	                                g2d.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
-	                                lastNode = draw;
-	                            }
-	                        }
-	                    } else {
-	                        g2d.setColor(Color.black);
-	                    }
-	                }
-	            }
-	            if (node.connections != null) {
-	                Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
-	                g2d.setFont(text);
-	                g2d.drawString((int) (node.getSpeed()) + "km/h", node.x, node.y - 5);
-	                g2d.drawString(node.x + "," + node.y, node.x, node.y - 15);
-	            }
-	            if (node.size == 1) {
-	                g2d.fillOval(node.x - 5, node.y - 5, 10, 10);
-	            } else {
-	                g2d.fillOval(node.x - 3, node.y - 3, 6, 6);
-	            }
-	        }
-	    }
+		for (Node node : intersections) {
+			g.setColor(Color.black);
+			if (nodes.contains(node)) {
+				if (node.marker) {
+					if (!path.isEmpty()) {
+						g.setColor(Color.black);
+						
+						Node lastNode = null;
+						for (Node draw : path) {
+							if (lastNode == null) {
+								lastNode = draw;
+								continue;
+							} else {
+								g.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
+								lastNode = draw;
+							}
+						}
+					}
+				} else {
+					g.setColor(Color.black);
+				}
+				if (node.connections != null) {
+					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
+					g2d.setFont(text);
+					g2d.drawString((int) (node.getSpeed()) + "km/h", node.x, node.y - 5);
+					g2d.drawString(node.x + "," + node.y, node.x, node.y - 15);
+				}
+				if (node.size == 1) {
+					g.fillOval(node.x - 5, node.y - 5, 10, 10);
+				} else {
+					g.fillOval(node.x - 3, node.y - 3, 6, 6);
+				}
+			}
+		}
 	}
 
 	public void generateTraffic() {
@@ -180,7 +148,11 @@ public class GPSApp extends GPSBase {
 		super.paintComponent(g);
 		this.draw(g);
 		if (TimerListener.getTime()==0) {
-			generateTraffic();
+			for (Node node : nodes) {
+				if (nodes.contains(node)) {
+					node.adjustTraffic();
+				}
+			}
 		}
 		repaint();
 	}
