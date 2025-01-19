@@ -14,12 +14,15 @@ import javax.swing.*;
  * Dijkstra's Algorithm.
  */
 public class GPSApp extends GPSBase {
-	public static Stack<Node> path = new Stack<Node>();
-	static JFrame frame = new JFrame("Map with Mouse Listener");
-	static GPSApp panel = new GPSApp("src/8.PNG");
-	public Double combinedDistance = 0.0;
-	//public boolean considerTraffic = true;
+	public static Stack<Node> path = new Stack<Node>(); //for highlights
+	static JFrame frame = new JFrame("Map with Mouse Listener"); //map frame
+	static GPSApp panel = new GPSApp("src/8.PNG"); //image
+	public Double combinedDistance = 0.0; //straight-line distance from start to end nodes
 	
+
+	/*
+	 * Constructor; initializes all important functions
+	 */
 	public GPSApp(String imagePath) {
 		super(imagePath);
 		generateTraffic();
@@ -35,28 +38,31 @@ public class GPSApp extends GPSBase {
 		timer.start();
 
 		addMouseListener(new MouseAdapter() {
-			@Override
+			@Override 
+			/*
+			 * Handles node selection.
+			 */
 			public void mouseClicked(MouseEvent e) {
 				try {
-					int x = e.getX();
+					int x = e.getX(); //returns mouse coordinates
 					int y = e.getY();
 					int nodeType = InterfaceUI.nodeSelection;
 
 					// print(findNearestNode(x,y,10));
 					// print(Arrays.deepToString(nodes.toArray()));
 					// print(findConnections(findNearestNode(x,y,50)).size());
-					if (nodeType > 0) {
-						if (nodeType == 1) {
+					if (nodeType > 0) { //check for selection type
+						if (nodeType == 1) { //selecting start position
 							selectedNode1 = findNearestNode(x, y, 10);
 							InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
 							// print(Arrays.deepToString(selectedNode1.connections.toArray()));
-						} else if (nodeType == 2) {
+						} else if (nodeType == 2) { //selecting end position
 							selectedNode2 = findNearestNode(x, y, 10);
 							InterfaceUI.destination.setText("(" + selectedNode2.x + ", " + selectedNode2.y + ")");
 							// print(Arrays.deepToString(selectedNode2.connections.toArray()));
 						}
 
-						InterfaceUI.nodeSelection = 0;
+						InterfaceUI.nodeSelection = 0; //turn off selection mode
 					}
 				} catch (Exception NullPointerException) {
 					System.err.println("Node not found.");
@@ -67,10 +73,13 @@ public class GPSApp extends GPSBase {
 	}
 
 	@Override
+	/*
+	 * Draws the lines for the traffic/fastest path
+	 */
 	void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		Color lvl[] = { Color.green, new Color(226, 186, 52), Color.red };
-		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
+		Color lvl[] = { Color.green, new Color(226, 186, 52), Color.red }; //level-traffic bindings
+		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this); //draws the map
 
 		for (Node node : nodes) {
 			for (Double value : node.congestion) {
@@ -89,12 +98,12 @@ public class GPSApp extends GPSBase {
 			if (node.next != null) {
 				g2d.setStroke(new BasicStroke(5));
 				for (Node next : node.next) {
-					g.drawLine(node.x, node.y, next.x, next.y);
+					g.drawLine(node.x, node.y, next.x, next.y); //draws the line between nodes
 				}
 			}
 		}
 
-		for (Node node : intersections) {
+		for (Node node : intersections) { //draws intersections (black dot)
 			g.setColor(Color.black);
 			if (nodes.contains(node)) {
 				if (node.marker) {
@@ -115,8 +124,10 @@ public class GPSApp extends GPSBase {
 				} else {
 					g.setColor(Color.black);
 				}
+
+				//displays speedlimit
 				if (node.connections != null) {
-					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
+					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);  //font
 					g2d.setFont(text);
 					g2d.drawString((int) (node.getSpeed()) + "km/h", node.x, node.y - 5);
 					g2d.drawString(node.x + "," + node.y, node.x, node.y - 15);
@@ -130,6 +141,7 @@ public class GPSApp extends GPSBase {
 		}
 	}
 
+	//calls setTraffic method to assign traffic levels to roads
 	public void generateTraffic() {
 		for (Node node : nodes) {
 			if (nodes.contains(node)) {
@@ -138,6 +150,7 @@ public class GPSApp extends GPSBase {
 		}
 	}
 	
+	//adjusts/updates traffic levels
 	public void adjustTraffic() {
 		for (Node node : nodes) {
 			if (nodes.contains(node)) {
@@ -155,6 +168,7 @@ public class GPSApp extends GPSBase {
 	}
 
 	@Override
+	//constantly updates the map & handles traffic updates
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.draw(g);
@@ -164,6 +178,7 @@ public class GPSApp extends GPSBase {
 		repaint();
 	}
 	
+	//removes highlighted path
 	public void clearPath() {
 		for (Node node : path) {
 			node.marker = false;
@@ -172,16 +187,17 @@ public class GPSApp extends GPSBase {
 		path = new Stack<Node>();
 	}
 	
+	//Primary algorithm. Uses a custom algorithm based off nodes. See project supporting documentation
 	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers, HashSet<Stack<Node>> iteration) {
 	    double weight = 1; // Default
 		String regex = ",";
-		String selectedMods[] = modifiers.split(regex);  
+		String selectedMods[] = modifiers.split(regex); //grabs individual modifiers
 		
 		for (String mod : selectedMods) {
-			if (mod.contains("traffic")) {
+			if (mod.contains("traffic")) { //ignore/dont ignore traffic
 		        weight *= current.getTraffic() + 2;
 			}
-			if (mod.contains("speed")) {
+			if (mod.contains("speed")) { //ignore/dont ignore speed limits
 				weight /= current.getSpeed();
 			}
 		}
@@ -197,7 +213,7 @@ public class GPSApp extends GPSBase {
 	        }
 
 	        Node closest = null;
-	        double closestDistance = Double.MAX_VALUE;
+	        double closestDistance = Double.MAX_VALUE; //sets initial closest distance to a really high number
 
 	        for (Node connection : current.connections) {
 	            if (visited.contains(connection)) {
@@ -205,10 +221,11 @@ public class GPSApp extends GPSBase {
 	            }
 
 	            if (connection == end) {
-	                closest = end;
+	                closest = end; //when the closest node is the end; path formed
 	                break;
 	            }
 
+				//calculate the distance between the start and end. if closer than the currently selected node, changes as accordingly
 	            double combinedDistance = connection.findDistance(end) * weight;
 	            if (combinedDistance < closestDistance) {
 	                closest = connection;
@@ -216,6 +233,7 @@ public class GPSApp extends GPSBase {
 	            }
 	        }
 
+			//continues the algorithm if closest exists
 	        if (closest != null) {
 	            path.push(closest);
 	            visited.add(closest);

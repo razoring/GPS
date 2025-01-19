@@ -6,16 +6,16 @@ import java.util.ArrayList;
  * Class for all functions related to individual nodes.
  */
 public class Node {
-	int x;
-	int y;
-	int size;
-	boolean marker;
+	int x; //node x coordinate
+	int y; //node y coordinate
+	int size; //node size
+	boolean marker; //marked or not
 	ArrayList<Double> congestion; // traffic values
 	ArrayList<Double> previousCongestion; // traffic values
 	ArrayList<Node> connections;
-	ArrayList<Node> next;
-	ArrayList<Node> prev;
-	String type;
+	ArrayList<Node> next; //next node
+	ArrayList<Node> prev; //previous node
+	String type; //node type
 	String icons[] = {"-","+"};
 
 	//Enforces value limits for the value being clamped.
