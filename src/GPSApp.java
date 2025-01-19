@@ -17,7 +17,7 @@ public class GPSApp extends GPSBase {
 	public static Stack<Node> path = new Stack<Node>();
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
-	private boolean considerTraffic = true;
+	public boolean considerTraffic = true;
 	
 	public GPSApp(String imagePath) {
 		super(imagePath);
