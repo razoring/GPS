@@ -64,65 +64,99 @@ public class GPSApp extends GPSBase {
 	}
 
 	@Override
-	void draw(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		Color lvl[] = { Color.green, new Color(226, 186, 52), Color.red };
-		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
+	public void draw(Graphics g) {
+	    Graphics2D g2d = (Graphics2D) g;
+	    Color lvl[] = {Color.green, new Color(226, 186, 52), Color.red};
+	    g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 
-		for (Node node : nodes) {
-			for (Integer value : node.congestion) {
-				if (node.type.equals("CURVE")) {
-					// print(value);
-				}
-				g.setColor(lvl[value]);
-			}
+	    // HashMap to track animation progress
+	    Map<Node, Float> animationProgress = new HashMap<>();
 
-			if (node.next != null) {
-				g2d.setStroke(new BasicStroke(5));
-				for (Node next : node.next) {
-					g.drawLine(node.x, node.y, next.x, next.y);
-				}
-			}
-		}
+	    for (Node node : nodes) {
+	        for (int i = 0; i < node.congestion.size(); i++) {
+	            Integer currentValue = node.congestion.get(i);
+	            Integer previousValue = node.previousCongestion.get(i);
+	            
+	            if (!currentValue.equals(previousValue)) {
+	                // Initiate animation if values are different
+	                animateCongestion(node, previousValue, currentValue, animationProgress);
+	            }
 
-		for (Node node : intersections) {
-			g.setColor(Color.black);
-			if (nodes.contains(node)) {
-				if (node.marker) {
-					if (!path.isEmpty()) {
-						if (path.getFirst()!=node || path.getLast()!=node) {
-							g.setColor(Color.blue);
-		
-							Node lastNode = null;
-							for (Node draw : path) {
-								if (lastNode == null) {
-									lastNode = draw;
-									continue;
-								} else {
-									g.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
-									lastNode = draw;
-								}
-							}
-						} else {
-							g.setColor(Color.black);
-						}
-					}
-				} else {
-					g.setColor(Color.black);
-				}
-				if (node.connections != null) {
-					Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
-					g2d.setFont(text);
-					g2d.drawString((int) (node.getSpeed()) + "km/h", node.x, node.y - 5);
-					g2d.drawString(node.x + "," + node.y, node.x, node.y - 15);
-				}
-				if (node.size == 1) {
-					g.fillOval(node.x - 5, node.y - 5, 10, 10);
-				} else {
-					g.fillOval(node.x - 3, node.y - 3, 6, 6);
-				}
-			}
-		}
+	            Color tweenColor = getTweenColor(lvl[previousValue], lvl[currentValue], animationProgress.getOrDefault(node, 1.0f));
+	            g.setColor(tweenColor);
+	        }
+
+	        if (node.next != null) {
+	            g2d.setStroke(new BasicStroke(5));
+	            for (Node next : node.next) {
+	                g.drawLine(node.x, node.y, next.x, next.y);
+	            }
+	        }
+	    }
+
+	    // Continue with the rest of the draw logic for intersections
+	    drawIntersections(g2d);
+	}
+	
+	private void animateCongestion(Node node, int previousValue, int currentValue, Map<Node, Float> animationProgress) {
+	    // Initialize animation progress for the node if not already present
+	    if (!animationProgress.containsKey(node)) {
+	        animationProgress.put(node, 0.0f);
+	    }
+	    // Increase the animation progress over time
+	    float progress = animationProgress.get(node) + 0.05f;
+	    if (progress >= 1.0f) {
+	        progress = 1.0f;
+	        // Update the previous congestion to the current once the animation is complete
+	        node.previousCongestion.set(node.congestion.indexOf(currentValue), currentValue);
+	    }
+	    animationProgress.put(node, progress);
+	}
+
+	private Color getTweenColor(Color startColor, Color endColor, float progress) {
+	    int r = (int) (startColor.getRed() + progress * (endColor.getRed() - startColor.getRed()));
+	    int g = (int) (startColor.getGreen() + progress * (endColor.getGreen() - startColor.getGreen()));
+	    int b = (int) (startColor.getBlue() + progress * (endColor.getBlue() - startColor.getBlue()));
+	    return new Color(r, g, b);
+	}
+
+	private void drawIntersections(Graphics2D g2d) {
+	    for (Node node : intersections) {
+	        g2d.setColor(Color.black);
+	        if (nodes.contains(node)) {
+	            if (node.marker) {
+	                if (!path.isEmpty()) {
+	                    if (path.getFirst() != node || path.getLast() != node) {
+	                        g2d.setColor(Color.blue);
+
+	                        Node lastNode = null;
+	                        for (Node draw : path) {
+	                            if (lastNode == null) {
+	                                lastNode = draw;
+	                                continue;
+	                            } else {
+	                                g2d.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
+	                                lastNode = draw;
+	                            }
+	                        }
+	                    } else {
+	                        g2d.setColor(Color.black);
+	                    }
+	                }
+	            }
+	            if (node.connections != null) {
+	                Font text = new Font(Font.SANS_SERIF, Font.BOLD, 8);
+	                g2d.setFont(text);
+	                g2d.drawString((int) (node.getSpeed()) + "km/h", node.x, node.y - 5);
+	                g2d.drawString(node.x + "," + node.y, node.x, node.y - 15);
+	            }
+	            if (node.size == 1) {
+	                g2d.fillOval(node.x - 5, node.y - 5, 10, 10);
+	            } else {
+	                g2d.fillOval(node.x - 3, node.y - 3, 6, 6);
+	            }
+	        }
+	    }
 	}
 
 	public void generateTraffic() {
@@ -145,7 +179,7 @@ public class GPSApp extends GPSBase {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.draw(g);
-		if (TimerListener.getTime()>=120) {
+		if (TimerListener.getTime()==0) {
 			generateTraffic();
 		}
 		repaint();

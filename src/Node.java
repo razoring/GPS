@@ -14,6 +14,7 @@ public class Node {
 	int size;
 	boolean marker;
 	ArrayList<Integer> congestion; // traffic values
+	ArrayList<Integer> previousCongestion; // traffic values
 	ArrayList<Node> connections;
 	ArrayList<Node> next;
 	ArrayList<Node> prev;
@@ -34,6 +35,7 @@ public class Node {
 		marker = false;
 		connections = new ArrayList<Node>();
 		congestion = new ArrayList<Integer>();
+		previousCongestion = new ArrayList<Integer>();
 		next = new ArrayList<Node>();
 		prev = new ArrayList<Node>();
 		size = s;
@@ -42,6 +44,7 @@ public class Node {
 	
 	public void setTraffic() {
 		for (int i = 0; i < congestion.size(); i++) {
+			previousCongestion = new ArrayList<>(congestion);
 	        int updatedValue = clamp(congestion.get(i)+random(),0,2);
 	        congestion.set(i, updatedValue);
 	    }
