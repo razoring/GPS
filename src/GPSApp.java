@@ -145,7 +145,7 @@ public class GPSApp extends GPSBase {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.draw(g);
-		if (TimerListener.getTime()==120) {
+		if (TimerListener.getTime()>=120) {
 			generateTraffic();
 		}
 		repaint();
@@ -161,15 +161,16 @@ public class GPSApp extends GPSBase {
 	
 	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers, HashSet<Stack<Node>> iteration) {
 	    double weight = 1; // Default
-		String regex = "[,]";
-		String[] selectedMods = modifiers.split(regex);  
-
-	    if (selectedMods.contains("speed")) {
-	        weight *= current.getTraffic() + 2;
-	    }
-
-		if (selectedMods.contains("traffic")) {
-			weight /= current.getSpeed();
+		String regex = ",";
+		String selectedMods[] = modifiers.split(regex);  
+		
+		for (String mod : selectedMods) {
+			if (mod.contains("traffic")) {
+		        weight *= current.getTraffic() + 2;
+			}
+			if (mode.contains("speed")) {
+				weight /= current.getSpeed();
+			}
 		}
 
 	    if (type.equals("Distance") && current != null) {
