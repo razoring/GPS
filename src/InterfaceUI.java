@@ -257,6 +257,7 @@ public class InterfaceUI extends JFrame {
                 } else if (event.getSource() == forceUpdate) { //Forcefully updates the UI
                     System.out.println("Force Update mapPanel");
                     gpsApp.generateTraffic();
+            		gpsApp.repaint();
                 } else if (event.getSource() == clear) {
                     //start.setText("[Select Start]");
                     //destination.setText("[Select Destination]");
@@ -264,6 +265,7 @@ public class InterfaceUI extends JFrame {
                     gpsApp.selectedNode2 = null;
                     System.out.println("Selections cleared");
                     gpsApp.clearPath();
+            		gpsApp.repaint();
                 }
             }
 

@@ -89,16 +89,18 @@ public class GPSApp extends GPSBase {
 			if (nodes.contains(node)) {
 				if (node.marker) {
 					if (!path.isEmpty()) {
-						g.setColor(Color.blue);
-	
-						Node lastNode = null;
-						for (Node draw : path) {
-							if (lastNode == null) {
-								lastNode = draw;
-								continue;
-							} else {
-								g.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
-								lastNode = draw;
+						if (path.getFirst()!=node || path.getLast()!=node) {
+							g.setColor(Color.blue);
+		
+							Node lastNode = null;
+							for (Node draw : path) {
+								if (lastNode == null) {
+									lastNode = draw;
+									continue;
+								} else {
+									g.drawLine(lastNode.x, lastNode.y, draw.x, draw.y);
+									lastNode = draw;
+								}
 							}
 						}
 					}
@@ -141,7 +143,6 @@ public class GPSApp extends GPSBase {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.draw(g);
-		repaint();
 	}
 	
 	public void clearPath() {
