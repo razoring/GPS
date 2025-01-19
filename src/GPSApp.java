@@ -70,12 +70,18 @@ public class GPSApp extends GPSBase {
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 
 		for (Node node : nodes) {
-			for (Integer value : node.congestion) {
-				if (node.type.equals("CURVE")) {
-					// print(value);
-				}
-				g.setColor(lvl[value]);
-			}
+			for (Double value : node.congestion) {
+	            Color startColor = lvl[(int) Math.floor(value)];
+	            Color endColor = lvl[(int) Math.ceil(value)];
+	            float fraction = (float) (value - Math.floor(value));
+
+	            // Interpolating between startColor and endColor based on fraction
+	            int red = (int) (startColor.getRed() + (endColor.getRed() - startColor.getRed()) * fraction);
+	            int green = (int) (startColor.getGreen() + (endColor.getGreen() - startColor.getGreen()) * fraction);
+	            int blue = (int) (startColor.getBlue() + (endColor.getBlue() - startColor.getBlue()) * fraction);
+
+	            g.setColor(new Color(red, green, blue));
+	        }
 
 			if (node.next != null) {
 				g2d.setStroke(new BasicStroke(5));
@@ -142,7 +148,11 @@ public class GPSApp extends GPSBase {
 		super.paintComponent(g);
 		this.draw(g);
 		if (TimerListener.getTime()==0) {
-			adjustTraffic();
+			for (Node node : nodes) {
+				if (nodes.contains(node)) {
+					node.adjustTraffic();
+				}
+			}
 		}
 		repaint();
 	}

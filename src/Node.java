@@ -13,15 +13,15 @@ public class Node {
 	int y;
 	int size;
 	boolean marker;
-	ArrayList<Integer> congestion; // traffic values
-	ArrayList<Integer> previousCongestion; // traffic values
+	ArrayList<Double> congestion; // traffic values
+	ArrayList<Double> previousCongestion; // traffic values
 	ArrayList<Node> connections;
 	ArrayList<Node> next;
 	ArrayList<Node> prev;
 	String type;
 	String icons[] = {"-","+"};
 
-	private static int clamp(int val, int min, int max) {
+	private static double clamp(double val, double min, double max) {
 	    return Math.max(min,Math.min(max,val));
 	}
 	
@@ -34,8 +34,8 @@ public class Node {
 		y = yy;
 		marker = false;
 		connections = new ArrayList<Node>();
-		congestion = new ArrayList<Integer>();
-		previousCongestion = new ArrayList<Integer>();
+		congestion = new ArrayList<Double>();
+		previousCongestion = new ArrayList<Double>();
 		next = new ArrayList<Node>();
 		prev = new ArrayList<Node>();
 		size = s;
@@ -45,10 +45,19 @@ public class Node {
 	public void setTraffic() {
 		for (int i = 0; i < congestion.size(); i++) {
 			previousCongestion = new ArrayList<>(congestion);
-	        int updatedValue = clamp(congestion.get(i)+random(),0,2);
+			double updatedValue = clamp(congestion.get(i)+random(),0,2);
 	        congestion.set(i, updatedValue);
 	    }
 	}
+	
+	public void adjustTraffic() {
+	    for (int i = 0; i < congestion.size(); i++) {
+	        double currentValue = congestion.get(i);
+	        double targetValue = Math.min(2.0, Math.max(0.0, currentValue + random() * 0.01)); // Update towards the next state
+	        congestion.set(i, targetValue);
+	    }
+	}
+
 	
 	public double findDistance(Node target) {
 		return Math.sqrt(Math.pow((target.x-this.x), 2)+Math.pow((target.y-this.y), 2)); // pythagorean theorem
@@ -65,8 +74,8 @@ public class Node {
 	public int getTraffic() {
 		int avg = 0;
 		for (Node node : this.connections ) {
-			for (Integer value : this.congestion) {
-				avg = avg+(int)(value);
+			for (Double value : this.congestion) {
+				avg = (int)(avg+value);
 			}
 		}
 		return this.connections.size()<1?0:avg/this.connections.size();
@@ -77,7 +86,7 @@ public class Node {
 	}
 	
 	public void add(Node node, String type) {
-		this.congestion.add(1);
+		this.congestion.add(1.0);
 		this.connections.add(node);
 		if (type.equals("prev")) {
 			this.prev.add(node);
