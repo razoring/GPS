@@ -65,13 +65,15 @@ public class GPSApp extends GPSBase {
 	@Override
 	void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-        Color[] baseColors = { Color.green, new Color(226, 186, 52), Color.red };
+		Color lvl[] = { Color.green, new Color(226, 186, 52), Color.red };
 		g.drawImage(mapImage, 0, 0, getWidth(), getHeight(), this);
 
 		for (Node node : nodes) {
-			for (Double value : node.congestion) {
-				Color color = tween(Color.green, new Color(226, 186, 52), Color.red, value);
-				g.setColor(color);
+			for (Integer value : node.congestion) {
+				if (node.type.equals("CURVE")) {
+					// print(value);
+				}
+				g.setColor(lvl[value]);
 			}
 
 			if (node.next != null) {
@@ -120,23 +122,6 @@ public class GPSApp extends GPSBase {
 				}
 			}
 		}
-	}
-	
-	private Color tween(Color green, Color yellow, Color red, double value) {
-		Color color;
-		if (value <= 1.0) {
-			color = blend(green, yellow, value);
-		} else {
-			color = blend(yellow, red, value - 1.0);
-		}
-		return color;
-	}
-
-	private Color blend(Color c1, Color c2, double ratio) {
-		int red = (int) ((1 - ratio) * c1.getRed() + ratio * c2.getRed());
-		int green = (int) ((1 - ratio) * c1.getGreen() + ratio * c2.getGreen());
-		int blue = (int) ((1 - ratio) * c1.getBlue() + ratio * c2.getBlue());
-		return new Color(red, green, blue);
 	}
 
 	public void generateTraffic() {
