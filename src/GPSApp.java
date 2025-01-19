@@ -23,6 +23,9 @@ public class GPSApp extends GPSBase {
 	public GPSApp(String imagePath) {
 		super(imagePath);
 		generateTraffic();
+		for (int i = 0;i<20;i++) {
+			adjustTraffic();
+		}
 		Thread timer = new Thread() {
 			public void run() {
 				TimerListener elapsed = new TimerListener();
@@ -134,6 +137,14 @@ public class GPSApp extends GPSBase {
 			}
 		}
 	}
+	
+	public void adjustTraffic() {
+		for (Node node : nodes) {
+			if (nodes.contains(node)) {
+				node.adjustTraffic((int)(Math.round(Math.random())));
+			}
+		}
+	}
 
 	public static void main(String[] args) {
 		frame.setCursor(Cursor.CROSSHAIR_CURSOR);
@@ -148,11 +159,7 @@ public class GPSApp extends GPSBase {
 		super.paintComponent(g);
 		this.draw(g);
 		if (TimerListener.getTime()==0) {
-			for (Node node : nodes) {
-				if (nodes.contains(node)) {
-					node.adjustTraffic((int)(Math.round(Math.random())));
-				}
-			}
+			adjustTraffic();
 		}
 		repaint();
 	}
