@@ -23,7 +23,7 @@ public class InterfaceUI extends JFrame {
     public static JButton destination;
     public JButton routeCalculate;
     public JButton clear;
-    public JButton status;
+    public JLabel status;
     private JCheckBox speed;
     private JCheckBox traffic;
     public static int nodeSelection = 0; //For buttons
@@ -133,20 +133,16 @@ public class InterfaceUI extends JFrame {
     private JPanel debugUI() {
         JPanel info = new JPanel(new BorderLayout()); //Main layout
         JPanel mCoord = new JPanel(new FlowLayout());
-        JPanel traffic = new JPanel(new FlowLayout());
 
         //JList<String> aiMapTest = new JList<>();
         mouseCoordinate = new JLabel("[Mouse Coordinate]"); //Constantly displays the cursor's coordinate on the map
         mCoord.add(mouseCoordinate);
 
         trafficTimer = new JLabel("[Reset Timer]"); //Countdown to next traffic level update
-        forceUpdate = new JButton("[Force Update]"); //Allows the user to forcefully update the UI
-        traffic.add(trafficTimer);
-        traffic.add(forceUpdate);
 
        //info.add(aiMapTest, BorderLayout.CENTER);
         info.add(mCoord, BorderLayout.WEST);
-        info.add(traffic, BorderLayout.EAST);
+        info.add(trafficTimer, BorderLayout.EAST);
         return info;
     }
 
