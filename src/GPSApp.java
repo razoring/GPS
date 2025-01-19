@@ -17,6 +17,7 @@ public class GPSApp extends GPSBase {
 	public static Stack<Node> path = new Stack<Node>();
 	static JFrame frame = new JFrame("Map with Mouse Listener");
 	static GPSApp panel = new GPSApp("src/8.PNG");
+	public Double combinedDistance = 0.0;
 	public boolean considerTraffic = true;
 	
 	public GPSApp(String imagePath) {
@@ -44,7 +45,7 @@ public class GPSApp extends GPSBase {
 					if (nodeType > 0) {
 						if (nodeType == 1) {
 							selectedNode1 = findNearestNode(x, y, 10);
-							InterfaceUI.startButton.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
+							InterfaceUI.start.setText("(" + selectedNode1.x + ", " + selectedNode1.y + ")");
 							// print(Arrays.deepToString(selectedNode1.connections.toArray()));
 						} else if (nodeType == 2) {
 							selectedNode2 = findNearestNode(x, y, 10);
@@ -193,6 +194,7 @@ public class GPSApp extends GPSBase {
 				if (combinedDistance < closestDistance) {
 					closest = connection;
 					closestDistance = combinedDistance;
+					this.combinedDistance = combinedDistance;
 				}
 			}
 
