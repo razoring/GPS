@@ -168,7 +168,7 @@ public class GPSApp extends GPSBase {
 			if (mod.contains("traffic")) {
 		        weight *= current.getTraffic() + 2;
 			}
-			if (mode.contains("speed")) {
+			if (mod.contains("speed")) {
 				weight /= current.getSpeed();
 			}
 		}
