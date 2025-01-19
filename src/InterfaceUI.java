@@ -241,6 +241,7 @@ public class InterfaceUI extends JFrame {
                     //(Stack<Node>) removed
                     Stack<Node> path = new Stack<Node>();
                     path.add(gpsApp.selectedNode1);
+                    gpsApp.clearPath();
                     gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
                     status.setText("Distance: " + gpsApp.combinedDistance);
                 } else if (event.getSource() == clear) {
