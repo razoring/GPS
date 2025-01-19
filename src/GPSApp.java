@@ -150,7 +150,7 @@ public class GPSApp extends GPSBase {
 		if (TimerListener.getTime()==0) {
 			for (Node node : nodes) {
 				if (nodes.contains(node)) {
-					node.adjustTraffic();
+					node.adjustTraffic((int)(Math.round(Math.random())));
 				}
 			}
 		}

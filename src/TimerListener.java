@@ -28,7 +28,7 @@ public class TimerListener {
 		wait(1);
 		t++;
 		
-		if (t>=120) {
+		if (t>=10) {
 			t = 0;
 			
 		}

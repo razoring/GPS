@@ -18,9 +18,8 @@ public class Node {
 	String type;
 	String icons[] = {"-","+"};
 
-	private static double clamp(double val, double min, double max) {
 	//Enforces value limits for the value being clamped.
-	private static int clamp(int val, int min, int max) {
+	private static double clamp(double val, double min, double max) {
 	    return Math.max(min,Math.min(max,val));
 	}
 	
@@ -52,23 +51,21 @@ public class Node {
 	    }
 	}
 	
-	public void adjustTraffic() {
-	    for (int i = 0; i < congestion.size(); i++) {
-	        double currentValue = congestion.get(i);
-	        double targetValue = Math.min(2.0, Math.max(0.0, currentValue + random() * 0.01)); // Update towards the next state
-	        congestion.set(i, targetValue);
-	    }
+	public void adjustTraffic(int mod) {
+		if (mod==1) {
+		    for (int i = 0; i < congestion.size(); i++) {
+		        double currentValue = congestion.get(i);
+		        double targetValue = Math.min(2.0, Math.max(0.0, currentValue + random() * 0.05)); // Update towards the next state
+		        congestion.set(i, targetValue);
+		    }
+		} else {
+		    for (int i = 0; i < congestion.size(); i++) {
+		        double currentValue = congestion.get(i);
+		        double targetValue = Math.min(2.0, Math.max(0.0, currentValue + random() * -0.05)); // Update towards the next state
+		        congestion.set(i, targetValue);
+		    }
+		}
 	}
-
-	
-	public void adjustTraffic() {
-	    for (int i = 0; i < congestion.size(); i++) {
-	        double currentValue = congestion.get(i);
-	        double targetValue = Math.min(2.0, Math.max(0.0, currentValue + random() * 0.01)); // Update towards the next state
-	        congestion.set(i, targetValue);
-	    }
-	}
-
 	
 	// Pythagorean theorem's the distance between two nodes.
 	public double findDistance(Node target) {
