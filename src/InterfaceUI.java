@@ -19,7 +19,7 @@ public class InterfaceUI extends JFrame {
     public static JLabel endLabel;
     private static JLabel trafficTimer;
     private JButton forceUpdate;
-    public static JButton startButton;
+    public static JButton start;
     public static JButton destination;
     public JButton routeCalculate;
     public JButton clear;
@@ -57,7 +57,7 @@ public class InterfaceUI extends JFrame {
         traffic.addItemListener(checkListener);
         speed.addItemListener(checkListener);
 
-        startButton.addActionListener(buttonListener);
+        start.addActionListener(buttonListener);
         destination.addActionListener(buttonListener);
         routeCalculate.addActionListener(buttonListener);
         clear.addActionListener(buttonListener);
@@ -66,17 +66,6 @@ public class InterfaceUI extends JFrame {
         forceUpdate.addActionListener(buttonListener);
 
         
-    }
-
-    /*
-     * Separate class for handling the top right of the UI. Contains the information for the InterfaceUI 
-     * (e.g. Start/End destination, current UI status)
-     */
-    private JPanel infoUI(){ 
-        JPanel info = new JPanel();
-
-
-        return info;
     }
 
     /**
@@ -91,13 +80,13 @@ public class InterfaceUI extends JFrame {
 
         //Top
         JPanel topPanel = new JPanel(new GridLayout(5, 1, 10, 5));
-        startButton = new JButton("[Select Start]");
+        start = new JButton("[Select Start]");
         destination = new JButton("[Select Destination]");
         routeCalculate = new JButton("[Calculate Routes]");
         clear = new JButton("[Clear Selection]");
 
         topPanel.add(new JLabel("<< Actions >>", SwingConstants.CENTER));
-        topPanel.add(startButton);
+        topPanel.add(start);
         topPanel.add(destination);
         topPanel.add(routeCalculate);
         topPanel.add(clear);
@@ -129,8 +118,11 @@ public class InterfaceUI extends JFrame {
         group.add(topPanel);
         group.add(bottomPanel);
 
-        ui.add(group, BorderLayout.CENTER);
+        //Status Bar
+        status = new JLabel("Program Status: Idle");
 
+        ui.add(group, BorderLayout.CENTER);
+        ui.add(status, BorderLayout.NORTH);
         return ui; 
     } 
 
@@ -222,8 +214,12 @@ public class InterfaceUI extends JFrame {
                 System.out.println("Speed: ");
                 if (speed.isSelected()) {
                     System.out.print("Selected");
+                    gpsApp.considerTraffic = true;
+                    System.out.println("Traffic is now considered.");
                 } else {
                     System.err.print("Unselected");
+                    gpsApp.considerTraffic = false;
+                    System.out.println("Traffic is no longer considered.");
                 }
             }
 
@@ -237,10 +233,10 @@ public class InterfaceUI extends JFrame {
         @Override
 		public void actionPerformed( ActionEvent event ) {
             if (nodeSelection == 0) {
-                if (event.getSource() == startButton) { //Allows the user to select their starting position
+                if (event.getSource() == start) { //Allows the user to select their starting position
                     //Will only run while node selection isnt active
                     System.out.println("Toggle Starting Coordinate Selection");
-                    //startButton.setText("Awaiting input.."); //Prompt
+                    //start.setText("Awaiting input.."); //Prompt
                     nodeSelection = 1; //Set node selection type to 1 (start)
                 } else if (event.getSource() == destination) { //Allows the user to select their destination
                     System.out.println("Toggle Destination Coordinate Selection");
@@ -248,22 +244,22 @@ public class InterfaceUI extends JFrame {
                     nodeSelection = 2; //Set node selection type to 2 (destination)
                 } else if (event.getSource() == routeCalculate && gpsApp.selectedNode1 != null && gpsApp.selectedNode2 != null) { //Calculates routes given considerations
                     System.out.println("Route Calculations");
+                    status.setText("Program Status: Calculating");
                     System.out.println("Starting Location: " + gpsApp.selectedNode1);
                     System.out.println("Ending Location: " + gpsApp.selectedNode2);
                     //(Stack<Node>) removed
                     Stack<Node> path = new Stack<Node>();
                     path.add(gpsApp.selectedNode1);
                     gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
-                } else if (event.getSource() == forceUpdate) { //Forcefully updates the UI
-                    System.out.println("Force Update mapPanel");
-                    gpsApp.generateTraffic();
-            		gpsApp.repaint();
+                    status.setText("Distance: " + gpsApp.combinedDistance);
                 } else if (event.getSource() == clear) {
-                    //start.setText("[Select Start]");
-                    //destination.setText("[Select Destination]");
+                    start.setText("[Select Start]");
+                    destination.setText("[Select Destination]");
+                    status.setText("Program Status: Idle");
                     gpsApp.selectedNode1 = null;
                     gpsApp.selectedNode2 = null;
                     System.out.println("Selections cleared-1");
+                    status.setText("Program Status: Idle");
                     gpsApp.clearPath();
             		gpsApp.repaint();
                 }
