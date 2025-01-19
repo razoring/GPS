@@ -145,6 +145,7 @@ public class GPSApp extends GPSBase {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.draw(g);
+		repaint();
 	}
 	
 	public void clearPath() {
