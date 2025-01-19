@@ -160,62 +160,88 @@ public class GPSApp extends GPSBase {
 	}
 	
 	public Stack<Node> algorithm(String type, Node start, Node current, Node end, Stack<Node> path, HashSet<Node> visited, String modifiers, HashSet<Stack<Node>> iteration) {
-		double weight = 1; //default
-		weight /= start.getSpeed();
+	    double weight = 1; // Default
+	    weight /= start.getSpeed();
 
-		if(considerTraffic){ 
-			weight *= start.getTraffic()+2;
-			
-		}
-		
-		if (type.equals("Distance") && current != null) {
-			if (current == end) {
-				for (Node item : path) {
-					item.marker = true;
-				}
-				path.push(end);
-				return path;
-			}
+	    if (considerTraffic) {
+	        weight *= start.getTraffic() + 2;
+	    }
 
-			Node closest = null;
-			double closestDistance = Double.MAX_VALUE;
+	    if (type.equals("Distance") && current != null) {
+	        if (current == end) {
+	            for (Node item : path) {
+	                item.marker = true;
+	            }
+	            path.push(end);
+	            iteration.add(path); // Store the first path
+	            return path;
+	        }
 
-			for (Node connection : current.connections) {
-				if (visited.contains(connection)) {
-					continue; // Avoid revisiting nodes
-				}
+	        Node closest = null;
+	        double closestDistance = Double.MAX_VALUE;
 
-				if (connection == end) {
-					closest = end;
-					break;
-				}
+	        for (Node connection : current.connections) {
+	            if (visited.contains(connection)) {
+	                continue; // Avoid revisiting nodes
+	            }
 
-				double combinedDistance = connection.findDistance(end)*weight;
-				if (combinedDistance < closestDistance) {
-					closest = connection;
-					closestDistance = combinedDistance;
-					this.combinedDistance = combinedDistance;
-				}
-			}
+	            if (connection == end) {
+	                closest = end;
+	                break;
+	            }
 
-			if (closest != null) {
-				path.push(closest);
-				visited.add(closest);
-				return algorithm("Distance", start, closest, end, path, visited, modifiers, iteration);
-			} else {
-				// Backtracking
-				if (!path.isEmpty()) {
-					path.pop(); // Unvisit the node to allow other paths, but retain the information that it has been visited to stop stack overflow
-					if (!path.isEmpty()) {
-						return algorithm("Distance", start, path.peek(), end, path, visited, modifiers, iteration);
-					}
-				} else {
-					return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers,
-							new HashSet<Stack<Node>>()); // fail safe, reverse the path and ensure a response
-				}
-			}
-		}
-		// fail safe, reverse the path and ensure a response
-		return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers, iteration);
+	            double combinedDistance = connection.findDistance(end) * weight;
+	            if (combinedDistance < closestDistance) {
+	                closest = connection;
+	                closestDistance = combinedDistance;
+	            }
+	        }
+
+	        if (closest != null) {
+	            path.push(closest);
+	            visited.add(closest);
+	            return algorithm(type, start, closest, end, path, visited, modifiers, iteration);
+	        } else {
+	            // Backtracking
+	            if (!path.isEmpty()) {
+	                path.pop(); // Unvisit the node
+	                if (!path.isEmpty()) {
+	                    return algorithm(type, start, path.peek(), end, path, visited, modifiers, iteration);
+	                }
+	            }
+	        }
+	    }
+
+	    // Calculate reverse path
+	    if (iteration.isEmpty()) {
+	        // Initial call for the reverse path
+	        return algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers, iteration);
+	    }
+
+	    // Retrieve the stored forward path
+	    Stack<Node> forwardPath = iteration.iterator().next();
+	    // Calculate and store the reverse path
+	    Stack<Node> reversePath = new Stack<>();
+	    reversePath = algorithm("Distance", end, end, start, new Stack<Node>(), new HashSet<Node>(), modifiers, iteration);
+
+	    // Compare paths based on weight or distance
+	    double forwardWeight = calculatePathWeight(forwardPath);
+	    double reverseWeight = calculatePathWeight(reversePath);
+
+	    return (forwardWeight <= reverseWeight) ? forwardPath : reversePath;
 	}
+
+	// Helper method to calculate total weight of a path
+	private double calculatePathWeight(Stack<Node> path) {
+	    double totalWeight = 0;
+	    Node previousNode = null;
+	    for (Node node : path) {
+	        if (previousNode != null) {
+	            totalWeight += previousNode.findDistance(node) / previousNode.getSpeed();
+	        }
+	        previousNode = node;
+	    }
+	    return totalWeight;
+	}
+
 }
