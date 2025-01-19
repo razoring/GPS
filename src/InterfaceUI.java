@@ -89,8 +89,6 @@ public class InterfaceUI extends JFrame {
         //Bottom
         JPanel bottomPanel = new JPanel(new GridLayout(5, 1, 10, 5));
 
-       // JButton quickest = new JButton("[Fastest Route]");
-
         //Traffic Box - If the GPS should consider traffic levels
         JPanel trafficCheck = new JPanel(new FlowLayout());
         traffic = new JCheckBox();
@@ -129,13 +127,11 @@ public class InterfaceUI extends JFrame {
         JPanel info = new JPanel(new BorderLayout()); //Main layout
         JPanel mCoord = new JPanel(new FlowLayout());
 
-        //JList<String> aiMapTest = new JList<>();
         mouseCoordinate = new JLabel("[Mouse Coordinate]"); //Constantly displays the cursor's coordinate on the map
         mCoord.add(mouseCoordinate);
 
         trafficTimer = new JLabel("[Reset Timer]"); //Countdown to next traffic level update
 
-       //info.add(aiMapTest, BorderLayout.CENTER);
         info.add(mCoord, BorderLayout.WEST);
         info.add(trafficTimer, BorderLayout.EAST);
         return info;
@@ -164,12 +160,6 @@ public class InterfaceUI extends JFrame {
     private class MouseHandler extends MouseAdapter {
 		// MouseListener event handlers
 		// handle event when mouse released immediately after the press
-
-		/*
-        public void mouseClicked( MouseEvent event ){
-			mouseCoordinate.setText( String.format( "Clicked at [%d, %d]",event.getX(), event.getY() ) );
-		} // end method mouseClicked
-		*/
 
 		// handle event when mouse pressed
 		public void mousePressed( MouseEvent event ){
@@ -223,11 +213,11 @@ public class InterfaceUI extends JFrame {
                 if (event.getSource() == start) { //Allows the user to select their starting position
                     //Will only run while node selection isnt active
                     System.out.println("Toggle Starting Coordinate Selection");
-                    //start.setText("Awaiting input.."); //Prompt
+                    start.setText("Awaiting input.."); //Prompt
                     nodeSelection = 1; //Set node selection type to 1 (start)
                 } else if (event.getSource() == destination) { //Allows the user to select their destination
                     System.out.println("Toggle Destination Coordinate Selection");
-                    //destination.setText("Awaiting input...");
+                    destination.setText("Awaiting input...");
                     nodeSelection = 2; //Set node selection type to 2 (destination)
                 } else if (event.getSource() == routeCalculate && gpsApp.selectedNode1 != null && gpsApp.selectedNode2 != null) { //Calculates routes given considerations
                     System.out.println("Route Calculations"); //debug
