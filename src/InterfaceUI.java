@@ -263,7 +263,7 @@ public class InterfaceUI extends JFrame {
                     //destination.setText("[Select Destination]");
                     gpsApp.selectedNode1 = null;
                     gpsApp.selectedNode2 = null;
-                    System.out.println("Selections cleared");
+                    System.out.println("Selections cleared-1");
                     gpsApp.clearPath();
             		gpsApp.repaint();
                 }
