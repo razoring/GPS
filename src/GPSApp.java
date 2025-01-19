@@ -127,7 +127,6 @@ public class GPSApp extends GPSBase {
 	public void generateTraffic() {
 		for (Node node : nodes) {
 			if (nodes.contains(node)) {
-				print("set");
 				node.setTraffic();
 			}
 		}
@@ -145,7 +144,9 @@ public class GPSApp extends GPSBase {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.draw(g);
-		System.out.println("Repaint called");
+		if (TimerListener.getTime()==120) {
+			generateTraffic();
+		}
 		repaint();
 	}
 	
