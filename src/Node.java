@@ -13,19 +13,19 @@ public class Node {
 	int y;
 	int size;
 	boolean marker;
-	ArrayList<Integer> congestion; // traffic values
+	ArrayList<Double> congestion; // traffic values
 	ArrayList<Node> connections;
 	ArrayList<Node> next;
 	ArrayList<Node> prev;
 	String type;
 	String icons[] = {"-","+"};
-
-	private static int clamp(int val, int min, int max) {
-	    return Math.max(min,Math.min(max,val));
-	}
 	
-	private int random() {
-	    return (int)(Math.random()*3)-1;
+	private static double clamp(double val, double min, double max) {
+	    return Math.max(min, Math.min(max, val));
+	}
+
+	private double random() {
+	    return (Math.random() * 3) - 1;
 	}
 	
 	public Node(int xx, int yy, String t, int s) {
@@ -33,7 +33,7 @@ public class Node {
 		y = yy;
 		marker = false;
 		connections = new ArrayList<Node>();
-		congestion = new ArrayList<Integer>();
+		congestion = new ArrayList<Double>();
 		next = new ArrayList<Node>();
 		prev = new ArrayList<Node>();
 		size = s;
@@ -42,7 +42,7 @@ public class Node {
 	
 	public void setTraffic() {
 		for (int i = 0; i < congestion.size(); i++) {
-	        int updatedValue = clamp(congestion.get(i)+random(),0,2);
+	        double updatedValue = clamp(congestion.get(i) + random(), 0.0, 2.0);
 	        congestion.set(i, updatedValue);
 	    }
 	}
@@ -62,8 +62,8 @@ public class Node {
 	public int getTraffic() {
 		int avg = 0;
 		for (Node node : this.connections ) {
-			for (Integer value : this.congestion) {
-				avg = avg+(int)(value);
+			for (Double value : this.congestion) {
+				avg = (int)(avg+value);
 			}
 		}
 		return this.connections.size()<1?0:avg/this.connections.size();
@@ -74,7 +74,7 @@ public class Node {
 	}
 	
 	public void add(Node node, String type) {
-		this.congestion.add(1);
+		this.congestion.add(1.0);
 		this.connections.add(node);
 		if (type.equals("prev")) {
 			this.prev.add(node);
