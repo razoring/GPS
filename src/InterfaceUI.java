@@ -27,6 +27,7 @@ public class InterfaceUI extends JFrame {
     public JButton routeCalculate;
     public JButton clear;
     public JLabel status;
+    public JLabel pathSpeed;
     private JCheckBox speed;
     private JCheckBox traffic;
     public static int nodeSelection = 0; //For buttons
@@ -121,10 +122,15 @@ public class InterfaceUI extends JFrame {
         group.add(bottomPanel);
 
         //Status Bar
-        status = new JLabel("Program Status: Idle");
+        JPanel statusBar = new JPanel(new GridLayout(2, 1));
+        status = new JLabel("Program Status: Idle", SwingConstants.CENTER);
+        pathSpeed = new JLabel("----", SwingConstants.CENTER);
+
+        statusBar.add(status);
+        statusBar.add(pathSpeed);
 
         ui.add(group, BorderLayout.CENTER);
-        ui.add(status, BorderLayout.NORTH);
+        ui.add(statusBar, BorderLayout.NORTH);
         return ui; 
     } 
 
@@ -234,16 +240,14 @@ public class InterfaceUI extends JFrame {
                         nodeSelection = 2; //Set node selection type to 2 (destination)
                         playAudio(0);
                     } else if (event.getSource() == routeCalculate && gpsApp.selectedNode1 != null && gpsApp.selectedNode2 != null) { //Calculates routes given considerations
-                        System.out.println("Route Calculations"); //debug
                         status.setText("Program Status: Calculating"); //status
-                        System.out.println("Starting Location: " + gpsApp.selectedNode1);
-                        System.out.println("Ending Location: " + gpsApp.selectedNode2);
     
                         Stack<Node> path = new Stack<Node>(); //creating the highlight
                         path.add(gpsApp.selectedNode1);
                         gpsApp.clearPath();
                         gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
-                        status.setText("Distance: " + (gpsApp.selectedNode2.x - gpsApp.selectedNode1.x + gpsApp.selectedNode2.y - gpsApp.selectedNode1.y));
+                        status.setText("Distance: " + (gpsApp.selectedNode2.x - gpsApp.selectedNode1.x + gpsApp.selectedNode2.y - gpsApp.selectedNode1.y)/3.78 + "km");
+                        pathSpeed.setText("Estimated Time: " + (gpsApp.selectedNode2.getSpeed() + gpsApp.selectedNode1.getSpeed())/2);
                         playAudio(2);
                     } else if (event.getSource() == clear) {
                         //reset all values to original
@@ -253,7 +257,7 @@ public class InterfaceUI extends JFrame {
                         gpsApp.selectedNode1 = null;
                         gpsApp.selectedNode2 = null;
                         System.out.println("Selections cleared-1"); //debug
-                        status.setText("Program Status: Idle");
+                        pathSpeed.setText("----");
                         gpsApp.clearPath();
                         gpsApp.repaint();
                         playAudio(1);
