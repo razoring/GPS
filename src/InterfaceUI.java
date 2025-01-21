@@ -4,6 +4,12 @@ import java.util.HashSet;
 import java.util.Stack;
 import javax.swing.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 /**
  * Jiawei Chen, Raymond So <p>
  * 01/15/2025 <p>
@@ -26,6 +32,11 @@ public class InterfaceUI extends JFrame {
     private JCheckBox speed;
     private JCheckBox traffic;
     public static int nodeSelection = 0; //For buttons
+
+    private static AudioInputStream audioInputStream; // AudioInputStream
+	private static Clip notifAudio;
+	private static Clip errorAudio;
+	private static Clip doneAudio;
     
 
     static GPSApp gpsApp = new GPSApp(null);
@@ -210,40 +221,75 @@ public class InterfaceUI extends JFrame {
         @Override
 		public void actionPerformed( ActionEvent event ) {
             if (nodeSelection == 0) {
-                if (event.getSource() == start) { //Allows the user to select their starting position
-                    //Will only run while node selection isnt active
-                    System.out.println("Toggle Starting Coordinate Selection");
-                    start.setText("Awaiting input.."); //Prompt
-                    nodeSelection = 1; //Set node selection type to 1 (start)
-                } else if (event.getSource() == destination) { //Allows the user to select their destination
-                    System.out.println("Toggle Destination Coordinate Selection");
-                    destination.setText("Awaiting input...");
-                    nodeSelection = 2; //Set node selection type to 2 (destination)
-                } else if (event.getSource() == routeCalculate && gpsApp.selectedNode1 != null && gpsApp.selectedNode2 != null) { //Calculates routes given considerations
-                    System.out.println("Route Calculations"); //debug
-                    status.setText("Program Status: Calculating"); //status
-                    System.out.println("Starting Location: " + gpsApp.selectedNode1);
-                    System.out.println("Ending Location: " + gpsApp.selectedNode2);
-
-                    Stack<Node> path = new Stack<Node>(); //creating the highlight
-                    path.add(gpsApp.selectedNode1);
-                    gpsApp.clearPath();
-                    gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
-                    status.setText("Distance: " + (gpsApp.selectedNode2.x - gpsApp.selectedNode1.x + gpsApp.selectedNode2.y - gpsApp.selectedNode1.y));
-                } else if (event.getSource() == clear) {
-                    //reset all values to original
-                    start.setText("[Select Start]");
-                    destination.setText("[Select Destination]");
-                    status.setText("Program Status: Idle");
-                    gpsApp.selectedNode1 = null;
-                    gpsApp.selectedNode2 = null;
-                    System.out.println("Selections cleared-1"); //debug
-                    status.setText("Program Status: Idle");
-                    gpsApp.clearPath();
-            		gpsApp.repaint();
+                try {
+                    if (event.getSource() == start) { //Allows the user to select their starting position
+                        //Will only run while node selection isnt active
+                        System.out.println("Toggle Starting Coordinate Selection");
+                        start.setText("Awaiting input.."); //Prompt
+                        nodeSelection = 1; //Set node selection type to 1 (start)
+                        playAudio(1);
+                    } else if (event.getSource() == destination) { //Allows the user to select their destination
+                        System.out.println("Toggle Destination Coordinate Selection");
+                        destination.setText("Awaiting input...");
+                        nodeSelection = 2; //Set node selection type to 2 (destination)
+                        playAudio(1);
+                    } else if (event.getSource() == routeCalculate && gpsApp.selectedNode1 != null && gpsApp.selectedNode2 != null) { //Calculates routes given considerations
+                        System.out.println("Route Calculations"); //debug
+                        status.setText("Program Status: Calculating"); //status
+                        System.out.println("Starting Location: " + gpsApp.selectedNode1);
+                        System.out.println("Ending Location: " + gpsApp.selectedNode2);
+    
+                        Stack<Node> path = new Stack<Node>(); //creating the highlight
+                        path.add(gpsApp.selectedNode1);
+                        gpsApp.clearPath();
+                        gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
+                        status.setText("Distance: " + (gpsApp.selectedNode2.x - gpsApp.selectedNode1.x + gpsApp.selectedNode2.y - gpsApp.selectedNode1.y));
+                    } else if (event.getSource() == clear) {
+                        //reset all values to original
+                        start.setText("[Select Start]");
+                        destination.setText("[Select Destination]");
+                        status.setText("Program Status: Idle");
+                        gpsApp.selectedNode1 = null;
+                        gpsApp.selectedNode2 = null;
+                        System.out.println("Selections cleared-1"); //debug
+                        status.setText("Program Status: Idle");
+                        gpsApp.clearPath();
+                        gpsApp.repaint();
+                    }
+                } catch (UnsupportedAudioFileException uafe) {
+                    System.err.println("Unsupported audio file.");
+                } catch (IOException ioe) {
+                    System.err.println("IOException. File issue detected");
+                } catch (LineUnavailableException lue) {
+                    System.err.println("Line Unavailable.");
                 }
             }
 
 		} // end method actionPerformed	
     }
+
+    public static void playAudio(int audioNum) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+		notifAudio = AudioSystem.getClip();
+		audioInputStream = AudioSystem.getAudioInputStream(new File("notif.wav")); // create AudioInputStream object
+		notifAudio.open(audioInputStream); // open audioInputStream to the clip
+		
+		errorAudio = AudioSystem.getClip();
+		audioInputStream = AudioSystem.getAudioInputStream(new File("error.wav")); // create AudioInputStream object
+		errorAudio.open(audioInputStream); // open audioInputStream to the clip
+		
+		doneAudio = AudioSystem.getClip();
+		audioInputStream = AudioSystem.getAudioInputStream(new File("done.wav")); // create AudioInputStream object
+		doneAudio.open(audioInputStream); // open audioInputStream to the clip
+		
+		if (audioNum == 0) {
+			errorAudio.setFramePosition(0);
+			errorAudio.start(); // play AudioClip once
+		} else if (audioNum == 1){
+			notifAudio.setFramePosition(0);
+			notifAudio.start(); // play AudioClip once
+		} else {
+			doneAudio.setFramePosition(0);
+			doneAudio.start();
+		}
+	}
 }
