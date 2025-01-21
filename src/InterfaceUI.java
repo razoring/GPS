@@ -1,9 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Stack;
 import javax.swing.*;
-
+import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -194,7 +195,7 @@ public class InterfaceUI extends JFrame {
      */
     private class CheckBoxEventListener implements ItemListener {
 		@Override
-		public void itemStateChanged( ItemEvent event ) throws UnsupportedAudioFileException, IOException, LineUnavailableException { 
+		public void itemStateChanged( ItemEvent event ) { 
             if (event.getSource() == traffic) { //Traffic Level considerations
                 System.out.println("Traffic: ");
                 if (traffic.isSelected()) {
@@ -221,7 +222,7 @@ public class InterfaceUI extends JFrame {
      */
     private class ButtonEventListener implements ActionListener {
         @Override
-		public void actionPerformed( ActionEvent event ) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+		public void actionPerformed( ActionEvent event ) {
             if (nodeSelection == 0) {
                     if (event.getSource() == start) { //Allows the user to select their starting position
                         //Will only run while node selection isnt active
@@ -264,28 +265,32 @@ public class InterfaceUI extends JFrame {
 		} // end method actionPerformed	
     }
 
-    public static void playAudio(int audioNum) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-		notifAudio = AudioSystem.getClip();
-		audioInputStream = AudioSystem.getAudioInputStream(new File("notif.wav")); // create AudioInputStream object
-		notifAudio.open(audioInputStream); // open audioInputStream to the clip
-		
-		errorAudio = AudioSystem.getClip();
-		audioInputStream = AudioSystem.getAudioInputStream(new File("error.wav")); // create AudioInputStream object
-		errorAudio.open(audioInputStream); // open audioInputStream to the clip
-		
-		doneAudio = AudioSystem.getClip();
-		audioInputStream = AudioSystem.getAudioInputStream(new File("done.wav")); // create AudioInputStream object
-		doneAudio.open(audioInputStream); // open audioInputStream to the clip
-		
-		if (audioNum == 0) {
-			errorAudio.setFramePosition(0);
-			errorAudio.start(); // play AudioClip once
-		} else if (audioNum == 1){
-			notifAudio.setFramePosition(0);
-			notifAudio.start(); // play AudioClip once
-		} else {
-			doneAudio.setFramePosition(0);
-			doneAudio.start();
-		}
+    public static void playAudio(int audioNum) {
+    	try {
+    		notifAudio = AudioSystem.getClip();
+    		audioInputStream = AudioSystem.getAudioInputStream(new File("notif.wav")); // create AudioInputStream object
+    		notifAudio.open(audioInputStream); // open audioInputStream to the clip
+    		
+    		errorAudio = AudioSystem.getClip();
+    		audioInputStream = AudioSystem.getAudioInputStream(new File("error.wav")); // create AudioInputStream object
+    		errorAudio.open(audioInputStream); // open audioInputStream to the clip
+    		
+    		doneAudio = AudioSystem.getClip();
+    		audioInputStream = AudioSystem.getAudioInputStream(new File("done.wav")); // create AudioInputStream object
+    		doneAudio.open(audioInputStream); // open audioInputStream to the clip
+    		
+    		if (audioNum == 0) {
+    			errorAudio.setFramePosition(0);
+    			errorAudio.start(); // play AudioClip once
+    		} else if (audioNum == 1){
+    			notifAudio.setFramePosition(0);
+    			notifAudio.start(); // play AudioClip once
+    		} else {
+    			doneAudio.setFramePosition(0);
+    			doneAudio.start();
+    		}
+    	} catch (Exception e) {
+    		
+    	}
 	}
 }
