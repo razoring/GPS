@@ -247,7 +247,7 @@ public class InterfaceUI extends JFrame {
                         gpsApp.clearPath();
                         gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
                         status.setText("Distance: " + Math.abs(Math.ceil((gpsApp.selectedNode2.x - gpsApp.selectedNode1.x + gpsApp.selectedNode2.y - gpsApp.selectedNode1.y)/3.78)) + "km");
-                        pathSpeed.setText("Estimated Time: " + Math.ceil((gpsApp.selectedNode2.getSpeed() + gpsApp.selectedNode1.getSpeed())/2));
+                        pathSpeed.setText("Estimated Time: " + Math.ceil((gpsApp.selectedNode2.getSpeed() + gpsApp.selectedNode1.getSpeed())/2) + " minutes");
                         playAudio(2);
                     } else if (event.getSource() == clear) {
                         //reset all values to original
