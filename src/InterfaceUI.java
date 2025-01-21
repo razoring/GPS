@@ -1,15 +1,12 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
+import java.io.File;
 import java.util.HashSet;
 import java.util.Stack;
-import javax.swing.*;
-import java.io.File;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.*;
 
 /**
  * Jiawei Chen, Raymond So <p>
@@ -36,7 +33,7 @@ public class InterfaceUI extends JFrame {
 
     private static AudioInputStream audioInputStream; // AudioInputStream
 	private static Clip notifAudio;
-	private static Clip errorAudio;
+	private static Clip promptAudio;
 	private static Clip doneAudio;
     
 
@@ -176,6 +173,7 @@ public class InterfaceUI extends JFrame {
 		// handle event when mouse pressed
 		public void mousePressed( MouseEvent event ){
 			mouseCoordinate.setText( String.format( "Pressed at [%d, %d]",event.getX(), event.getY() ) );
+            playAudio(0);
 		} // end method mousePressed
 		
 		// handle event when mouse exits an area
@@ -229,12 +227,12 @@ public class InterfaceUI extends JFrame {
                         System.out.println("Toggle Starting Coordinate Selection");
                         start.setText("Awaiting input.."); //Prompt
                         nodeSelection = 1; //Set node selection type to 1 (start)
-                        playAudio(1);
+                        playAudio(0);
                     } else if (event.getSource() == destination) { //Allows the user to select their destination
                         System.out.println("Toggle Destination Coordinate Selection");
                         destination.setText("Awaiting input...");
                         nodeSelection = 2; //Set node selection type to 2 (destination)
-                        playAudio(1);
+                        playAudio(0);
                     } else if (event.getSource() == routeCalculate && gpsApp.selectedNode1 != null && gpsApp.selectedNode2 != null) { //Calculates routes given considerations
                         System.out.println("Route Calculations"); //debug
                         status.setText("Program Status: Calculating"); //status
@@ -271,17 +269,17 @@ public class InterfaceUI extends JFrame {
     		audioInputStream = AudioSystem.getAudioInputStream(new File("notif.wav")); // create AudioInputStream object
     		notifAudio.open(audioInputStream); // open audioInputStream to the clip
     		
-    		errorAudio = AudioSystem.getClip();
-    		audioInputStream = AudioSystem.getAudioInputStream(new File("error.wav")); // create AudioInputStream object
-    		errorAudio.open(audioInputStream); // open audioInputStream to the clip
+    		promptAudio = AudioSystem.getClip();
+    		audioInputStream = AudioSystem.getAudioInputStream(new File("prompt.wav")); // create AudioInputStream object
+    		promptAudio.open(audioInputStream); // open audioInputStream to the clip
     		
     		doneAudio = AudioSystem.getClip();
     		audioInputStream = AudioSystem.getAudioInputStream(new File("done.wav")); // create AudioInputStream object
     		doneAudio.open(audioInputStream); // open audioInputStream to the clip
     		
     		if (audioNum == 0) {
-    			errorAudio.setFramePosition(0);
-    			errorAudio.start(); // play AudioClip once
+    			promptAudio.setFramePosition(0);
+    			promptAudio.start(); // play AudioClip once
     		} else if (audioNum == 1){
     			notifAudio.setFramePosition(0);
     			notifAudio.start(); // play AudioClip once
