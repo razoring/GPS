@@ -194,7 +194,7 @@ public class InterfaceUI extends JFrame {
      */
     private class CheckBoxEventListener implements ItemListener {
 		@Override
-		public void itemStateChanged( ItemEvent event ) {
+		public void itemStateChanged( ItemEvent event ) throws UnsupportedAudioFileException, IOException, LineUnavailableException { 
             if (event.getSource() == traffic) { //Traffic Level considerations
                 System.out.println("Traffic: ");
                 if (traffic.isSelected()) {
@@ -209,7 +209,9 @@ public class InterfaceUI extends JFrame {
                 } else {
                     System.err.print("Unselected");
                 }
-            }
+            } 
+
+            playAudio(1);
 
 		}
 	}
@@ -219,9 +221,8 @@ public class InterfaceUI extends JFrame {
      */
     private class ButtonEventListener implements ActionListener {
         @Override
-		public void actionPerformed( ActionEvent event ) {
+		public void actionPerformed( ActionEvent event ) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
             if (nodeSelection == 0) {
-                try {
                     if (event.getSource() == start) { //Allows the user to select their starting position
                         //Will only run while node selection isnt active
                         System.out.println("Toggle Starting Coordinate Selection");
@@ -244,6 +245,7 @@ public class InterfaceUI extends JFrame {
                         gpsApp.clearPath();
                         gpsApp.path = gpsApp.algorithm("Distance", gpsApp.selectedNode1, gpsApp.selectedNode1, gpsApp.selectedNode2, path, new HashSet<Node>(), (traffic.isSelected()?"traffic,":"")+(speed.isSelected()?"speed,":""), new HashSet<Stack<Node>>());
                         status.setText("Distance: " + (gpsApp.selectedNode2.x - gpsApp.selectedNode1.x + gpsApp.selectedNode2.y - gpsApp.selectedNode1.y));
+                        playAudio(2);
                     } else if (event.getSource() == clear) {
                         //reset all values to original
                         start.setText("[Select Start]");
@@ -255,14 +257,8 @@ public class InterfaceUI extends JFrame {
                         status.setText("Program Status: Idle");
                         gpsApp.clearPath();
                         gpsApp.repaint();
+                        playAudio(1);
                     }
-                } catch (UnsupportedAudioFileException uafe) {
-                    System.err.println("Unsupported audio file.");
-                } catch (IOException ioe) {
-                    System.err.println("IOException. File issue detected");
-                } catch (LineUnavailableException lue) {
-                    System.err.println("Line Unavailable.");
-                }
             }
 
 		} // end method actionPerformed	
