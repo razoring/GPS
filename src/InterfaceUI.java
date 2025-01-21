@@ -263,6 +263,10 @@ public class InterfaceUI extends JFrame {
 		} // end method actionPerformed	
     }
 
+    /**
+     * Handles playing the SFX for the GUI
+     * @param audioNum the type of audio that should be played. 0 = prompt, 1 = notification, 2 = done
+     */
     public static void playAudio(int audioNum) {
     	try {
     		notifAudio = AudioSystem.getClip();
